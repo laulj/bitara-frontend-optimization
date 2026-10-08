@@ -23,6 +23,10 @@ Two directories, one rule:
 > their figures were superseded by the re-measured run, and one of their findings was retracted.
 > **Never cite a number from `method/` into a deliverable.**
 
+> **Handing this to the Bitara engineer?** They need one line, not a briefing: **Start here** at the
+> top of `docs/GEO-FIX-PLAN.md` carries the paste-ready task, the two-workspace setup (`$GEO` vs
+> `$SITE`), the first three actions in order, and what "done" produces.
+
 ### `docs/` — authoritative
 
 | Path | What it is | Read it for |

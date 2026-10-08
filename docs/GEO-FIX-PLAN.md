@@ -5,7 +5,7 @@
 | Reader | Read | Why |
 |---|---|---|
 | **Human** (engagement lead, client, engineering owner) | §1–§3, then each task card's *Evidence / Change / Owner* fields | to decide, staff and approve |
-| **LLM executor** (a coding agent in the site repo) | everything in order, but treat §2 (gates), §3 (rules) and each card's *Locate / Change / Verify / Forbidden* fields as executable instructions | to make the change deterministically and prove it |
+| **LLM executor** (a coding agent, working across **`$GEO`** and **`$SITE`** — see *Start here*) | everything in order, but treat §2 (gates), §3 (rules) and each card's *Locate / Change / Verify / Forbidden* fields as executable instructions | to make the change deterministically and prove it |
 
 Every number here is `[MEASURED]` and traces to an artifact in `reports/geo/20261008-193000/`.
 Nothing here re-litigates the settled baseline — §1 below is the source of record, produced by
@@ -14,6 +14,68 @@ Nothing here re-litigates the settled baseline — §1 below is the source of re
 > **Blocker that shapes the whole plan:** the website source repository has not been supplied, so
 > no task may be *applied* yet. Each card is written so that repo access is the **only** missing
 > input — when the repo lands, an executor starts at §5 with `P0-1` and needs no re-briefing.
+
+---
+
+## Start here — the handoff
+
+**The instruction to paste to the executing agent:**
+
+> New task: read `docs/GEO-FIX-PLAN.md` in the `bitara-frontend-optimization` repo, then execute it in
+> order. Run `P0-4` first (it needs no site access and `P0-1` cannot be verified without it), then
+> take `P0-1` starting with its mandatory Step-1 triage. Report per §5.6 and stop at anything §5.7
+> says to escalate.
+
+### Two workspaces — the part that is easy to get wrong
+
+| | What it is | Contains | Commands that belong here |
+|---|---|---|---|
+| **`$GEO`** | this repository (`bitara-frontend-optimization`) | the plan, the harness, the evidence, the verifier | `bash scripts/geo/bootstrap.sh`, `run-geo.sh`, `verify-fixes.sh`, `.venv/bin/python scripts/geo/*.py`, `git` |
+| **`$SITE`** | the Bitara frontend source repo | the code being changed | `rg` to locate the cause, `git checkout -b`, the template edits, the site's own build/test commands |
+
+**Every `scripts/geo/…` and `.venv/bin/python` path in this document is relative to `$GEO` — including
+inside the task cards.** The harness is deliberately *not* vendored into the site repo. Measure in
+`$GEO`; edit in `$SITE`. §2's before/after runs happen in `$GEO`; §5.4's edit happens in `$SITE`.
+
+### First three actions, in this order
+
+1. **Set up.** Clone both repositories and name them once:
+
+   ```bash
+   export GEO=/path/to/bitara-frontend-optimization   # this repo: plan, harness, evidence
+   export SITE=/path/to/bitara-frontend               # the site source repo (code changes land here)
+   cd "$GEO" && bash scripts/geo/bootstrap.sh         # pinned Python 3.12 env, no credentials
+   ```
+2. **`P0-4` — runnable immediately, needs no site access.** It completes the reduced-class membership
+   across the full AI-crawler UA list, rather than the three UAs sampled so far. `P0-1`'s acceptance
+   criterion is unsound until this exists.
+3. **Get the site repo and the credentials, then start `P0-1`** with its Step-1 triage. Until the repo
+   arrives, every other task stays `blocked: source repo` — do not substitute a smaller change that
+   merely looks like the fix (§3 rule 10).
+
+### What "done" produces
+
+- `docs/geo-fix-plan.json` updated: `status` per task, `evidence` = the before/after artifact paths,
+  and `blocked_by[{reason, owner}]` for anything still blocked.
+- A **before** and an **after** run under `reports/geo/<runId>/`. The diff of their
+  `manifest.json → readings` is the proof of movement; an assertion without two runs is not evidence
+  (§5.9).
+- `reports/GEO-REPORT.md` — the §6 reporting contract (executive summary, baseline→after table,
+  axis scorecard, accepted risks **with owners**, and the exact re-run commands). This is the
+  document the client reads; `reports/geo/<runId>/findings.md` is the machine-side record.
+- One paragraph a non-technical reader can forward.
+
+### Status at hand-over
+
+| | |
+|---|---|
+| Ready to run | `P0-4` |
+| Blocked on the site repo | `P0-1`, `P0-2`, `P0-3`, `P1-1`, `P1-2`, `P1-3` |
+| Blocked on credentials | `P2-1` (IndexNow key, GSC/BWT), `P2-3` (API keys) |
+| Blocked on a client decision | `P2-2` (off-site scope) |
+| Applied to the live site | **nothing** |
+
+Baseline for comparison: run `20261008-193000` (`reports/geo/20261008-193000/`), already in the repo.
 
 ---
 
@@ -107,8 +169,8 @@ is clean (every `Accept` variant returns full 200 HTML); no `noindex` anywhere; 
 
 
 ```bash
-# GEO harness — the before/after artifacts (this is the proof of movement).
-# Self-contained: bootstrap creates the pinned env, run-geo.sh resolves everything else.
+# Run these from $GEO (the harness repo), NOT from the site repo — see "Start here".
+# bootstrap creates the pinned env once; run-geo.sh resolves everything else itself.
 bash scripts/geo/bootstrap.sh                  # once → ./.venv (Python 3.12)
 GEO_RUN_ID=<runId> bash scripts/geo/run-geo.sh # writes reports/geo/<runId>/
 
@@ -225,6 +287,7 @@ unadvertised variant is a cache-poisoning hazard as well as a cloaking one).
 **Acceptance — all four, with numbers:**
 
 ```bash
+# Run from $GEO (the harness repo) — see "Start here" for the two-workspace setup.
 jq '.analysis.reduced_variant_labels' reports/geo/<after>/ua-parity.json      # expect []
 jq '.analysis.content_classes'        reports/geo/<after>/ua-parity.json      # expect ONE value
 jq '.analysis.relative_to_chromeUA'   reports/geo/<after>/render-parity.json  # every ratio >= 0.98
@@ -357,7 +420,7 @@ locale.
 the reduced class must be complete — otherwise a fix can pass the test and still leave `CCBot` or
 `PerplexityBot` on a reduced page, and the acceptance criterion for `P0-1` is unsound.
 
-**Change (in this workspace, not the site repo):**
+**Change (in `$GEO` — the harness repo — not in `$SITE`):**
 
 1. Add `--ua-set <file.json>` to `scripts/geo/ua_parity.py`: read a list of
    `{"label": …, "user_agent": …}`, run **one** repeat each on the Chrome TLS profile, classify each
@@ -533,15 +596,19 @@ is `not measured`, never "zero results".
 ## 5. Executor protocol (for the coding agent)
 
 This is the loop. It is deliberately mechanical so that two runs of the same task produce the same
-diff.
+diff. Workspace rule: **measure, write artifacts and update state in `$GEO`; branch, edit and commit
+in `$SITE`** (see *Start here*).
 
 **5.1 Preconditions — check each, and stop if one fails.**
 
 ```bash
-test -d .git                     || echo "blocked: no repository"
-rg --version >/dev/null          || echo "blocked: no ripgrep"
-git status --porcelain | head    # clean tree, or explain the dirty files before starting
-test -d "$KIT"                   || echo "blocked: kit not found at $KIT"
+# Run from $GEO (the harness repo) — see "Start here" for the two-workspace setup.
+# In $GEO (this harness repo) — the measurement side:
+test -x .venv/bin/python          || echo "blocked: run scripts/geo/bootstrap.sh first"
+# In $SITE (the code being changed) — the repo §5.3 branches and §5.4 edits:
+test -d "$SITE/.git"             || echo "blocked: no site repository — every card except P0-4 stays blocked"
+command -v rg >/dev/null         || echo "blocked: no ripgrep"
+git -C "$SITE" status --porcelain | head    # clean tree, or explain the dirty files before starting
 ```
 
 **5.2 Select the task.** Highest priority first, in this order: `P0-4` → `P0-1` → `P0-2` → `P0-3` →
@@ -549,11 +616,12 @@ test -d "$KIT"                   || echo "blocked: kit not found at $KIT"
 is `blocked`, **skip it and record the block** — do not substitute a smaller edit that looks like the
 fix.
 
-**5.3 Before editing.** `git checkout -b geo/<task-id>-<slug>`; run §2 gates and save the artifacts
-under `reports/geo/<before-run-id>/`. If the gate suite is already red before your change, record the
-pre-existing failures and stop — you cannot attribute a delta from a broken baseline.
+**5.3 Before editing.** In `$SITE`: `git checkout -b geo/<task-id>-<slug>`. Then in `$GEO`: run §2
+gates and save the artifacts under `reports/geo/<before-run-id>/`. If the gate suite is already red
+before your change, record the pre-existing failures and stop — you cannot attribute a delta from a
+broken baseline.
 
-**5.4 Edit.** Template level, all locales (§3 rules 4, 6). One task per branch (§3 rule 12).
+**5.4 Edit.** In `$SITE`. Template level, all locales (§3 rules 4, 6). One task per branch (§3 rule 12).
 
 **5.5 Acceptance.** Run the card's acceptance block. Every assertion must be shown with its measured
 value. A command that could not run is written as `blocked: <reason>`, never omitted, and the task
@@ -574,8 +642,8 @@ jq '.tasks[] | select(.id=="P0-1")' docs/geo-fix-plan.json
 the only way to pass an acceptance check would be to serve bots something users do not get; a gate
 regresses and fixing it would require relaxing a budget; a `sameAs` target cannot be verified.
 
-**5.8 Commit** with the template: `geo(P0-1): <what changed>` + the before/after numbers + the
-artifact paths. Never squash multiple task ids into one commit.
+**5.8 Commit** in `$SITE` with the template: `geo(P0-1): <what changed>` + the before/after numbers +
+the artifact paths. Never squash multiple task ids into one commit.
 
 **5.9 Two runs, one diff.** Nothing is reported as improved unless
 `reports/geo/<before>/manifest.json` and `reports/geo/<after>/manifest.json` are both on disk and the
