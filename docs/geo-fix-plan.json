@@ -251,30 +251,30 @@
     {
       "id": "P1-1",
       "order": 5,
-      "title": "hreflang into the HTML head; reconcile /ja in llms.txt",
+      "title": "Reconcile the locale list in llms.txt (hreflang already ships)",
       "priority": "P1",
       "status": "blocked",
       "blocked_by": [{"reason": "website source repository not supplied", "owner": "client"}],
       "owner": "site engineering",
       "evidence": [
-        "hreflang exists only in the sitemap (17,688 xhtml:link entries); zero in the HTML head",
+        "CORRECTED 2026-10-08: 12 real <link rel=\"alternate\" hrefLang=...> tags ARE present on every page tested; the earlier 'zero in the HTML head' reading was an artefact of a case-sensitive grep (the attribute is spelled hrefLang with a capital L)",
         "/ja returns 200 and is in the sitemap (134 URLs) but is absent from llms.txt, which claims 10 languages",
         "sitemap-index.xml returns 404"
       ],
-      "why": "non-Google consumers, including AI fetchers, read HTML and not sitemaps; and the site currently contradicts itself about which locales exist.",
+      "why": "only one of the two locale facts is a defect: hreflang presentation already works and must not be rebuilt; the llms.txt locale list genuinely contradicts the sitemap.",
       "change": [
-        "Per-route metadata emitting alternates.canonical (self-referencing per locale) and alternates.languages for every locale plus x-default, generated from the same source of truth as the sitemap so the two cannot drift.",
-        "Add Japanese to the llms.txt language list and link sections so the file matches the sitemap locale set.",
+        "llms.txt: add Japanese to the language list and its link sections so the file matches the sitemap locale set, and correct the stated count.",
+        "Keep head and sitemap hreflang generated from one source of truth (already true) - do NOT rebuild it; optionally normalise the attribute to lowercase hreflang for case-sensitive parsers.",
         "Resolve sitemap-index.xml: add the index, or remove it from any documentation implying it exists."
       ],
       "acceptance": {
         "commands": [
-          "for p in / /ja/about /ar/about /zh/about; do curl -sS https://bitara.co$p | grep -o 'hreflang=\"[^\"]*\"' | sort -u | wc -l; done",
-          "curl -sS https://bitara.co/sitemap.xml | grep -o 'hreflang=\"[^\"]*\"' | sort -u | wc -l",
-          "pnpm -C $KIT wq test src/specs/seo.spec.ts"
+          "for p in / /ja/about /ar/about /zh/about; do curl -sS \"https://bitara.co$p\" | grep -io 'hreflang=\"[^\"]*\"' | sort -u | wc -l; done",
+          "curl -sS https://bitara.co/sitemap.xml | grep -io 'hreflang=\"[^\"]*\"' | sort -u | wc -l",
+          "bash scripts/geo/verify-fixes.sh --only P1-1"
         ],
         "assertions": [
-          "distinct head hreflang count equals the sitemap locale set, on every sampled locale",
+          "head hreflang set equals the sitemap set, case-insensitively, on every sampled locale",
           "x-default present",
           "Japanese present in llms.txt",
           "seo.spec.ts still green"

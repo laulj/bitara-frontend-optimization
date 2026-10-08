@@ -82,8 +82,18 @@ is recorded `not-measured` — it affects the neighbour claim only, not `bitara.
 `llms.txt` (22,722 B) and has never been promoted into structured data.
 
 **E6 — the locale surface is internally inconsistent.** `/ja` exists and is in the sitemap (134
-URLs) but is absent from `llms.txt`, which claims 10 languages. `hreflang` exists **only** in the
-sitemap (17,688 `xhtml:link` entries), **zero** in the HTML `<head>`.
+URLs) but is absent from `llms.txt`, which claims 10 languages: the site contradicts itself about
+which locales exist.
+
+**E6b — CORRECTION (measured 2026-10-08 by `scripts/geo/verify_fixes.py`).** The earlier claim that
+`hreflang` was **absent from the HTML `<head>`** was wrong, and wrong for a mundane reason: the site
+emits 12 `<link rel="alternate" hrefLang="…">` tags on every page tested, but spells the attribute
+`hrefLang` **with a capital L**. The original audit used a case-sensitive
+`grep -o 'hreflang="[^"]*"'`, which matched nothing — so "zero in the head" was recorded as a
+finding. Re-measured with a case-insensitive parse: `/` and `/zh/about` each carry **12 real link
+tags**, and their locale set equals the sitemap's, `x-default` included. So `hreflang` presentation
+is **already in place**; only the `llms.txt` locale list is genuinely out of step. The lesson is
+worth keeping in the harness: a case-sensitive grep is a measurement bug, not a finding.
 
 **Not defects — do not "fix":** `ai.txt` 404s correctly; `robots.txt` is permissive to all AI
 crawlers and carries `Content-Signal: search=yes, ai-input=yes, ai-train=yes`; content negotiation
@@ -154,7 +164,7 @@ Set `WQ_BASE_URL=https://bitara.co` if the suite default differs. Diff the two r
 | **P0-2** | Restore cache validators and cacheability | P0 | `blocked: source repo` | repo |
 | **P0-3** | Entity disambiguation against the parked `bitara.com` | P0 | `blocked: source repo` | repo |
 | **P0-4** | Full AI-crawler UA matrix (axis A) | P0 | **ready now** | none |
-| **P1-1** | `hreflang` into the HTML `<head>`; reconcile `/ja` in `llms.txt` | P1 | `blocked: source repo` | repo |
+| **P1-1** | Reconcile the locale list in `llms.txt` (`hreflang` already ships) | P1 | `blocked: source repo` | repo |
 | **P1-2** | Template-level JSON-LD coverage | P1 | `blocked: source repo` | repo |
 | **P1-3** | Answer-first openings + attributable statistics | P1 | `blocked: source repo` | repo |
 | **P2-1** | IndexNow on publish; sitemap submission | P2 | `blocked: credentials` | `INDEXNOW_KEY`, GSC/BWT |
@@ -368,48 +378,57 @@ non-200 as "not reduced" (it is `not-measured`).
 
 ---
 
-### P1-1 — `hreflang` into the HTML `<head>`; reconcile `/ja` in `llms.txt`
+### P1-1 — Reconcile the locale list in `llms.txt` (`hreflang` already ships)
 
-**Priority** P1 · **Status** `blocked: source repo` · **Owner** site engineering · **Evidence** E6
+**Priority** P1 · **Status** `blocked: source repo` · **Owner** site engineering ·
+**Evidence** E6, E6b
 
-**Why:** `[MEASURED]` `hreflang` exists only in the sitemap (17,688 `xhtml:link` entries) and is
-**absent from the HTML `<head>`** of every page. Non-Google consumers — including AI fetchers — read
-HTML, not sitemaps. Separately, `/ja` returns 200 and is in the sitemap (134 URLs) but is missing
-from `llms.txt`, which claims 10 languages: the site contradicts itself about which locales exist.
+**Why:** two locale facts, and only one is a defect.
+
+- `[MEASURED]` **Not a defect, contrary to the earlier record:** every page tested already emits 12
+  `<link rel="alternate" hrefLang="…">` tags whose locale set equals the sitemap's, `x-default`
+  included (E6b). The "zero in the head" reading came from a case-sensitive grep. Verify it stays
+  true; do not rebuild it.
+- `[MEASURED]` **A real defect:** `/ja` returns 200 and is in the sitemap (134 URLs) but is missing
+  from `llms.txt`, which claims 10 languages. The site contradicts itself about which locales exist.
 
 **Locate:**
 
 ```bash
-rg -n "hreflang|alternates|languages|x-default" -g '!node_modules' app lib 2>/dev/null
+# case-insensitive on purpose: the attribute is currently spelled hrefLang
+curl -sS https://bitara.co/ | grep -io 'hrefLang="[^"]*"' | sort -u
+rg -n "hreflang|hrefLang|alternates|languages|x-default" -g '!node_modules' app lib 2>/dev/null
 rg -n "locales|i18n|ja\b" i18n.* next.config.* middleware.ts 2>/dev/null
-curl -sS https://bitara.co/llms.txt | rg -n "languages|Japanese|ja\b" | head
+curl -sS https://bitara.co/llms.txt | rg -ni "languages|japanese|/ja/" | head
 ```
 
 **Change:**
 
-1. Per-route `generateMetadata` emitting `alternates.canonical` (self-referencing per locale) and
-   `alternates.languages` for **all** locales plus `x-default`, from the same source of truth the
-   sitemap uses — so the two can never drift.
-2. `llms.txt`: add Japanese to the language list and to the relevant link sections, so the file
-   matches the sitemap's locale set.
-3. `sitemap-index.xml` returns 404 — either add the index (needed once per-locale/per-type sitemaps
-   multiply) or remove it from any documentation that implies it exists. Do not leave the ambiguity.
+1. `llms.txt`: add Japanese to the language list and its link sections so the file matches the
+   sitemap's locale set, and correct the stated count.
+2. Keep head and sitemap `hreflang` generated from one source of truth — that is already the case;
+   the job is not to break it. If the generator is easy to touch, normalise the attribute to
+   lowercase `hreflang`: cosmetic per spec (HTML attribute names are case-insensitive), but this
+   engagement's own audit proved that case-sensitive parsers exist in the wild.
+3. `sitemap-index.xml` returns 404 — add the index, or remove it from any documentation implying it
+   exists. Do not leave the ambiguity.
 
 **Acceptance:**
 
 ```bash
-# distinct hreflang values in the HTML head == locale set in the sitemap (+x-default)
+# head set == sitemap set, case-insensitively (same count, x-default present)
 for p in / /ja/about /ar/about /zh/about; do
-  echo "$p: $(curl -sS https://bitara.co$p | grep -o 'hreflang="[^"]*"' | sort -u | wc -l)"
+  echo "$p: $(curl -sS "https://bitara.co$p" | grep -io 'hreflang="[^"]*"' | sort -u | wc -l)"
 done
-curl -sS https://bitara.co/sitemap.xml | grep -o 'hreflang="[^"]*"' | sort -u | wc -l   # same number
-curl -sS https://bitara.co/llms.txt | grep -c 'ja'                                       # Japanese present
-pnpm -C "$KIT" wq test src/specs/seo.spec.ts        # hreflang + canonical assertions stay green
+curl -sS https://bitara.co/sitemap.xml | grep -io 'hreflang="[^"]*"' | sort -u | wc -l
+
+bash scripts/geo/verify-fixes.sh --only P1-1   # expect: hreflang PASS, llms-locale-parity PASS
 ```
 
-**Forbidden:** emitting `hreflang` from a hand-maintained list inside a component (it will drift from
-the sitemap — the whole point is one source of truth); pointing `x-default` at a locale that does not
-exist. **Artifacts:** the four head dumps plus the sitemap counts.
+**Forbidden:** hand-maintaining the hreflang list inside a component (it will drift from the sitemap
+— one source of truth is the point); pointing `x-default` at a locale that does not exist; rewriting
+a passing check to make a task look unfinished. **Artifacts:** the head dumps, the sitemap counts,
+and the `verify-fixes.sh --only P1-1` report.
 
 ---
 
@@ -571,7 +590,8 @@ changed readings are quoted with their numbers.
       on public routes.
 - [ ] `P0-3` closed: `disambiguatingDescription` + non-empty `sameAs` + legal identifier on every
       locale of `/` and `/about`, plus the visible statement.
-- [ ] `P1-*` closed with numbers (hreflang count == sitemap locale set; `/ja` in `llms.txt`; JSON-LD
+- [ ] `P1-*` closed with numbers (`hreflang` head set == sitemap set — **verify, do not rebuild**;
+      `/ja` in `llms.txt`; JSON-LD
       coverage per template; answer-first openings recorded per template).
 - [ ] All §2 gates green; no budget relaxed silently.
 - [ ] Every blocked item carries a reason **and** an owner; nothing is silently dropped.

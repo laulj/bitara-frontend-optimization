@@ -75,6 +75,32 @@ template code (or the edge config), which is why `P0-1` remains blocked.
 `/ar` is correctly `dir="rtl"`; `sitemap.xml` 200 with 1,474 URLs and 17,688 hreflang entries;
 `llms.txt` well-formed at 22,722 B.
 
+## Corrections to the previously documented baseline
+
+Measured 2026-10-08 with `scripts/geo/verify_fixes.py` (see `docs/GEO-FIX-PLAN.md` E6b).
+
+**The "zero `hreflang` in the HTML `<head>`" finding was wrong.** Every page tested emits **12 real
+`<link rel="alternate" hrefLang="…">` tags**, and their locale set equals the sitemap's, `x-default`
+included. The original audit ran `grep -o 'hreflang="[^"]*"'` — case-sensitive — against HTML where
+the attribute is spelled **`hrefLang`** with a capital L, so it matched nothing and "none" was
+recorded as a result.
+
+Why this matters beyond one row: it is the failure mode a verification script exists to catch. A
+pattern that cannot match is indistinguishable from a feature that is absent unless the check is
+written to fail loudly — which is why `hreflang-in-head` here parses real `<link>` tags
+case-insensitively and compares sets rather than counting greps.
+
+Consequences: the `P1-1` task is now scoped to the genuine defect (the `llms.txt` locale list, which
+still omits `/ja`), and the hreflang half is a "verify, do not rebuild" item. The original claim has
+been retracted in `GEO-OPTIMIZATION-PROMPT.md` and `GEO-PROPOSAL-PROMPT.md` too, so the repository
+does not carry two contradictory versions of the same fact.
+
+**Refinement, not a correction:** the reduced per-UA variant is a **lexical subset with fewer
+repeats** (246 tokens absent vs 208 fewer-instance, 3 tokens unique to the bot side, 1 heading
+different) rather than a different page — see `raw/render/*.innerText.txt`. Duplicated list/ticker
+rendering in the full variant is the leading hypothesis, and it stays a hypothesis until the
+template code is read.
+
 ## Still not measured (blocked, with owner)
 
 L1 Google index (GSC access, client) · L2 Bing index (BWT key, client) · L3 `site:` counts (CSE key,

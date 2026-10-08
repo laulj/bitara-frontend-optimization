@@ -45,7 +45,42 @@ A step that cannot run is recorded as `blocked` with its reason and exit code 12
 | T6 `ua_parity.py` | The per-User-Agent content split as a 2×2 factorial (browser TLS vs plain curl × browser UA vs Googlebot UA), so header- and fingerprint-driven causes are not confounded | venv + curl |
 | `render_parity.mjs` | The same URL rendered in Chromium under each UA — separates "less HTML" from "less rendered content" | node + Playwright |
 | `compare_innertext.py` | Whether the reduced variant is a lexical *subset with fewer repeats* or genuinely different content | the two `innerText` dumps |
+| `verify_fixes.py` | **Whether the fixes actually landed** — the acceptance checks below | venv only |
 | `wq probe` | Optional browser read-back at 0 tokens/request | an external web-quality-kit checkout |
+
+## Verify the fixes
+
+After the site team applies changes, this answers "did it work?" — from outside, with no client
+credentials:
+
+```bash
+bash scripts/geo/verify-fixes.sh                  # human-readable table, exit 1 if a fix is missing
+bash scripts/geo/verify-fixes.sh --only P0-1,P0-2 # one task at a time
+bash scripts/geo/verify-fixes.sh --json           # machine-readable, for CI or a diff
+```
+
+Each check is mapped to a task id in `docs/GEO-FIX-PLAN.md` and reports one of:
+
+| Status | Meaning |
+|---|---|
+| **PASS** | measured, and the fix is in place |
+| **FAIL** | measured, and the fix is **not** in place |
+| **BLOCKED** | could not be measured — **not a pass**, and it names the credential and its owner |
+| **ADVISORY** | a human judgement (e.g. "does the opening sentence answer the question?"), never fails the run |
+| **INFO** | context, not a gate |
+
+Exit codes: `0` nothing measurable failed · `1` a fix is missing · `2` environment not bootstrapped ·
+`3` target unreachable (nothing was verified, which is not a clean result).
+
+What it can check without credentials: crawler parity per User-Agent, cache validators and
+cacheability, entity disambiguation in the structured data, `hreflang` coverage, locale parity
+between `llms.txt` and the sitemap, per-template JSON-LD coverage, the IndexNow key file, and the
+crawler files themselves.
+
+What it **cannot** check, and prints as `BLOCKED` rather than quietly omitting: Google index status,
+Bing index status, `site:` counts, and — the one that actually answers the client's question —
+whether Gemini/ChatGPT/Perplexity now cite `bitara.co`. No amount of on-page checking substitutes for
+those; each needs the credential named on its line.
 
 ## Headline findings
 

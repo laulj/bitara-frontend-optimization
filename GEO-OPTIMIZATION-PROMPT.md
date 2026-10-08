@@ -187,9 +187,12 @@ registration 202201037451.
 
 **Also verified this pass:** `/ja` exists and returns 200 for `/ja`, `/ja/about` and
 `/ja/services/trust-compliance`, and is declared in the sitemap (134 URLs) — but `llms.txt`
-documents **10** languages and omits Japanese entirely. `hreflang` exists **only in the
-sitemap** (17,688 `xhtml:link` entries; values `en, zh-CN, zh-TW, ko-KR, th, vi, es, ru, fr, ar,
-ja` + `x-default`) with **zero `hreflang` in the HTML `<head>`**. `/ar` correctly serves
+documents **10** languages and omits Japanese entirely. `hreflang` is present **in the HTML `<head>`
+and in the sitemap**: 12 `<link rel="alternate" hrefLang="…">` tags per page, carrying the same
+locale values as the sitemap (`en, zh-CN, zh-TW, ko-KR, th, vi, es, ru, fr, ar, ja` + `x-default`).
+**CORRECTED 2026-10-08:** this pass originally recorded "**zero `hreflang` in the HTML `<head>`**" —
+that was a case-sensitive-`grep` artefact (the attribute is spelled `hrefLang` with a capital L), not
+a finding. See `docs/GEO-FIX-PLAN.md` E6b. `/ar` correctly serves
 `lang="ar" dir="rtl"`. A `RSC: 1` request returns **307 → `/?_rsc`** (which itself returns 200
 HTML). `Accept: */*`, `Accept: text/html`, `application/xhtml+xml` and `text/x-component` all
 return the full 200 HTML, so content negotiation is not the problem.

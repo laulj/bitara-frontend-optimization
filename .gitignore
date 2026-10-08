@@ -16,3 +16,6 @@ reports/geo/*/probe-browser/screenshot.png
 
 # --- secret-scan output (regenerable; committing it invites re-scanning our own report) --
 reports/security/
+
+# --- verification output (regenerable; git add -f a snapshot if you want a dated record) --
+reports/verify/

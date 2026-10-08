@@ -36,8 +36,9 @@ fi
 "$PY" -m py_compile \
   "$REPO_ROOT/scripts/geo/cc_baseline.py" \
   "$REPO_ROOT/scripts/geo/ua_parity.py" \
-  "$REPO_ROOT/scripts/geo/compare_innertext.py" || exit 1
-echo "ok python syntax (cc_baseline, ua_parity, compare_innertext)"
+  "$REPO_ROOT/scripts/geo/compare_innertext.py" \
+  "$REPO_ROOT/scripts/geo/verify_fixes.py" || exit 1
+echo "ok python syntax (cc_baseline, ua_parity, compare_innertext, verify_fixes)"
 
 if command -v node >/dev/null 2>&1; then
   if node --check "$REPO_ROOT/scripts/geo/render_parity.mjs"; then

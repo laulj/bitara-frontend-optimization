@@ -76,7 +76,7 @@ labelled as adjacent work.
 | **`bitara.com` is a parked page** | NS `ns1/2/3.power-dns.com`; HTTP 200, `<title>Bitara.com - Ready for Development</title>` | The default brand guess for a `.com`-biased model. A parked page is arguably worse than no result — it reads as an authoritative non-answer |
 | **`bitara.net` / `bitara.io`** | `.net`: Cloudflare NS, A `172.67.128.117`, HTTP 308, HTTPS **525** (SSL handshake failed). `.io`: Cloudflare NS, no A record | Registered by others; `.net` is broken. Compounds entity confusion |
 | **Locale mismatch** | `/ja` returns 200 and occupies 134 sitemap URLs, but `llms.txt` documents **10** languages and never mentions Japanese | Machine-readable surface and sitemap disagree — a signal-quality problem for retrieval |
-| **`hreflang` is sitemap-only** | 0 `hreflang` links in the HTML `<head>` of `/zh/about`; correct values exist in the sitemap | Non-Google consumers, including AI fetchers, parse HTML and do not read sitemaps |
+| ~~**`hreflang` is sitemap-only**~~ **RETRACTED 2026-10-08** | The original check reported 0 `hreflang` links in the HTML `<head>` of `/zh/about`. Re-measured with a case-insensitive parse: **12 real `<link rel="alternate" hrefLang="…">` tags** per page, matching the sitemap's locale set. The 0 was a case-sensitive-`grep` artefact | Not a defect — **do not put this in the proposal** |
 
 ### What is *not* a blocker `[MEASURED]`
 
@@ -130,7 +130,9 @@ sed -e 's/<script[^>]*>.*<\/script>//g' -e 's/<[^>]*>/ /g' gb.html | tr -s ' \n'
 curl -sS https://bitara.co/robots.txt
 curl -sS https://bitara.co/llms.txt
 curl -sS https://bitara.co/sitemap.xml | grep -o '<loc>[^<]*' | wc -l
-curl -sS -A 'Googlebot/2.1' https://bitara.co/zh/about | grep -o 'hreflang="[^"]*"'   # → none
+curl -sS -A 'Googlebot/2.1' https://bitara.co/zh/about | grep -io 'hrefLang="[^"]*"'      # → 12
+# NOTE: the original pass ran this WITHOUT -i and got "none". The attribute is spelled
+# hrefLang, so a case-sensitive grep silently returned nothing. Use -i for HTML attributes.
 
 # Headers: caching, robots, edge (crawler view)
 curl -sS -D - -o /dev/null -A 'Googlebot/2.1' https://bitara.co/ | grep -iE 'etag|last-modified|cache-control|cf-cache-status'
@@ -229,9 +231,10 @@ dependency, and the artifact it produces. Suggested workstreams:
      "Bitara Capital Sdn. Bhd. is bitara.co" statement on `/` and `/about`; monitor
      `bitara.com`/`.net`/`.io`.
    - **W4 — Machine-readable surface integrity** (P1): reconcile `llms.txt` ↔ sitemap ↔ live
-     pages (**`/ja` missing from `llms.txt`**); add HTML `<head>` `hreflang`; template-level
-     JSON-LD (`BreadcrumbList`, `FAQPage`, `Service`, `Article`) with consistent canonical and
-     trailing-slash conventions.
+     pages (**`/ja` missing from `llms.txt`**); **verify** (do not rebuild) the HTML `<head>`
+     `hreflang`, which already ships as 12 `<link rel="alternate" hrefLang="…">` tags per page;
+     template-level JSON-LD (`BreadcrumbList`, `FAQPage`, `Service`, `Article`) with consistent
+     canonical and trailing-slash conventions.
    - **W5 — Content answerability** (P1): answer-first openings; attribute and date the quotable
      claims ("99.9% Uptime", "2.3 sec Block Time"); make `/insights/*` the reference standard
      and componentise it.
