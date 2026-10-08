@@ -3,13 +3,13 @@
 Status: **accepted — partially blocked** | Date: 2026-10-08 | Owner: engagement lead (unassigned)
 | Blocked on: Bitara Capital Sdn. Bhd. (credentials + source repo + per-UA variant ownership)
 
-Skeleton adopted from `GEO-TOOLING-PROPOSAL.md` §8, then filled with what was actually measured
+Skeleton adopted from `method/GEO-TOOLING-PROPOSAL.md` §8, then filled with what was actually measured
 in this session. Where the proposal and this ADR disagree, **this ADR records what happened** —
 the proposal was a plan.
 
 ## Context
 
-Seven measurements are impossible from outside the stack (L1–L7, `GEO-TOOLING-PROPOSAL.md` §1),
+Seven measurements are impossible from outside the stack (L1–L7, `method/GEO-TOOLING-PROPOSAL.md` §1),
 and the client-reported symptom — *"Gemini LLM cannot query bitara.co result"* — cannot be
 evidenced without index, corpus and citation data. Two of the seven blocks are hard stops:
 
@@ -123,7 +123,7 @@ now the content class with repeat-stability reporting, and an unmeasured factor 
 
 ## Rejected alternatives
 
-Unchanged from `GEO-TOOLING-PROPOSAL.md` §6, and re-affirmed here because the cost of each was
+Unchanged from `method/GEO-TOOLING-PROPOSAL.md` §6, and re-affirmed here because the cost of each was
 measurable in this session:
 
 | Rejected | Why |

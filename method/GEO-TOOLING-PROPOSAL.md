@@ -1,5 +1,13 @@
 # GEO Tooling Proposal — removing the measurement limitations on `bitara.co`
 
+> **What this is:** the working Phase-1 tooling decision (limitations L1–L7 → capabilities T1–T8)
+> that the ADR was built from. A generation input, not a deliverable.
+>
+> **Superseded by** [`docs/adr/ADR-001-geo-tooling.md`](../docs/adr/ADR-001-geo-tooling.md), which
+> records what was actually installed, what it closed, and the measured rejection reasons. **Where
+> the two differ, the ADR wins** — it is the decision of record. This file is kept because it is the
+> only place the seven limitations are argued in full.
+
 > Companion to `GEO-OPTIMIZATION-PROMPT.md` (Phase 1 tooling gate) and
 > `GEO-PROPOSAL-PROMPT.md` (the client's proposal). This document answers one question:
 > **which tools do we install so that the limitations found during the investigation stop

@@ -1,5 +1,16 @@
 # GEO Optimization Prompt — `bitara.co`
 
+> **What this is:** a *generation input* — the phase-by-phase audit prompt (Phases 1–5, axes A–J) that
+> scoped this engagement. It is neither a plan nor a record.
+>
+> **Superseded for facts and for actions** by [`docs/GEO-FIX-PLAN.md`](../docs/GEO-FIX-PLAN.md),
+> which holds the re-measured baseline (run `20261008-193000`), the task cards that replaced the
+> phase list, and the verification script. Numbers in the baseline tables below are from the *first
+> pass*, and several have since been corrected — see `docs/GEO-FIX-PLAN.md` §1 and E6b.
+>
+> Keep it for one reason: it is the written record of **why each axis was chosen and which questions
+> it asked**. Read it as method, never as current state.
+
 > **How to use:** paste everything below the `---` line into a fresh agent session
 > (Cline / Claude Code / Codex) with `bitara-frontend` as the working directory.
 > It is written to be **executed**, not read. Ask the agent to answer the
@@ -88,6 +99,18 @@ can have a flawless `llms.txt` and still be invisible to Gemini. Do not let exce
 scaffolding create false confidence about *visibility*.
 
 ## Verified baseline (measured 2026-10-08 — re-verify, then build on it)
+
+> **Superseded values — read this before quoting anything below.** This pass was re-measured by
+> `scripts/geo/run-geo.sh` (run `20261008-193000`); `docs/GEO-FIX-PLAN.md` §1 is the source of
+> record. Three corrections, all documented there:
+> - **Content-class sizes.** Full = **30,101** visible-text chars / ~1,445,262 B, reduced =
+>   **11,554** / ~248,585 B (this pass recorded 30,251 and 11,627). Do not quote "~62% less text":
+>   the reduced variant is a **lexical subset with fewer repeats**, not a different page (E2b).
+> - **Common Crawl.** Sampling was widened from 2 collections to **6 of 127**, all definitive 404s
+>   with nothing unmeasured (E3).
+> - **`hreflang`.** The claim further down that it is absent from the HTML `<head>` was **retracted** —
+>   it is present as 12 `<link rel="alternate" hrefLang="…">` per page; the original check used a
+>   case-sensitive grep against the capital-L spelling (E6b).
 
 This site is **already GEO-mature**. Do not arrive assuming a blank slate; the job is
 closing specific gaps, not a rebuild. Every row below was measured, not guessed.

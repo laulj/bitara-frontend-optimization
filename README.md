@@ -13,16 +13,39 @@ gaps it exposes.
 > supplied, so every task in the plan is written to be executable and marked `blocked: source repo`
 > rather than applied. One task — `P0-4` — is runnable today.
 
-## What is here
+## What is here — and which file is authoritative
+
+Two directories, one rule:
+
+> **`docs/` is authoritative; `method/` is how it was produced.**
+> `docs/GEO-FIX-PLAN.md` §1 is the single source of measured fact, and every number in it traces to
+> an artifact under `reports/`. The documents in `method/` are dated generation inputs: several of
+> their figures were superseded by the re-measured run, and one of their findings was retracted.
+> **Never cite a number from `method/` into a deliverable.**
+
+### `docs/` — authoritative
+
+| Path | What it is | Read it for |
+|---|---|---|
+| `docs/GEO-FIX-PLAN.md` | **The plan.** 10 task cards (P0-1…P2-3), each with evidence, how to locate the cause, the change, acceptance commands with numbers, and what is forbidden | §1–§3 first, then the cards |
+| `docs/geo-fix-plan.json` | The same plan as machine-readable state for a coding agent: task `status`, `blocked_by[{reason,owner}]`, `locate`, `acceptance.assertions` | driving an executor |
+| `docs/adr/ADR-001-geo-tooling.md` | Why this tooling and not another; what it closed; measured context cost; rejected alternatives | the tooling decision of record |
+
+### `method/` — genesis inputs (not authoritative)
+
+| Path | What it is | Status |
+|---|---|---|
+| `method/GEO-OPTIMIZATION-PROMPT.md` | The phase-by-phase audit prompt (Phases 1–5, axes A–J) that scoped the engagement | superseded for facts *and* actions by the plan; kept because it is the only record of **why each axis was chosen** |
+| `method/GEO-TOOLING-PROPOSAL.md` | The working Phase 1 tooling decision (limitations L1–L7 → capabilities T1–T8) | superseded by the ADR; **on any disagreement the ADR wins** |
+| `method/GEO-PROPOSAL-PROMPT.md` | The prompt that generates the client-facing proposal | **its deliverable `docs/GEO-PROPOSAL-bitara.co.md` has not been written yet** — and it is the only definition of the 15-prompt answer-engine set that `P2-3` depends on |
+
+### Evidence and tooling
 
 | Path | What it is |
 |---|---|
-| `docs/GEO-FIX-PLAN.md` | **The plan.** 10 task cards (P0-1…P2-3), each with evidence, how to locate the cause, the change, acceptance commands with numbers, and what is forbidden. Read §1–§3 first, then the cards. |
-| `docs/geo-fix-plan.json` | The same plan as machine-readable state for a coding agent: task `status`, `blocked_by[{reason,owner}]`, `locate`, `acceptance.assertions`. |
-| `docs/adr/ADR-001-geo-tooling.md` | Why this tooling and not another; what it closed; measured context cost; rejected alternatives. |
-| `scripts/geo/` | The measurement harness (below). |
-| `reports/geo/20261008-193000/` | The measured run: `findings.md`, `manifest.json`, and the JSON/TXT evidence it rests on. |
-| `GEO-OPTIMIZATION-PROMPT.md`, `GEO-TOOLING-PROPOSAL.md`, `GEO-PROPOSAL-PROMPT.md` | The engagement's method: how the audit is scoped, which tools were chosen, and the prompt that generates the client-facing proposal. |
+| `scripts/geo/` | The measurement harness, the fix verifier, and the secret-scan wrapper (see below) |
+| `reports/geo/20261008-193000/` | The measured run: `findings.md`, `manifest.json`, and the JSON/TXT evidence the plan rests on |
+| `reports/verify/` | Output of `verify-fixes.sh` — regenerable, gitignored |
 
 ## Quickstart
 

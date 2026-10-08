@@ -6,10 +6,9 @@
     "artifacts": "reports/geo/20261008-193000/",
     "human_readable_plan": "docs/GEO-FIX-PLAN.md",
     "prior_docs": [
-      "HANDOFF-PROMPT.md",
-      "GEO-OPTIMIZATION-PROMPT.md",
-      "GEO-TOOLING-PROPOSAL.md",
-      "GEO-PROPOSAL-PROMPT.md"
+      "method/GEO-OPTIMIZATION-PROMPT.md",
+      "method/GEO-TOOLING-PROPOSAL.md",
+      "method/GEO-PROPOSAL-PROMPT.md"
     ]
   },
   "executor_contract": {

@@ -1,5 +1,17 @@
 # GEO Proposal Prompt — `bitara.co`
 
+> **What this is:** a *generation input*, not a plan. Paste it into a fresh session to produce the
+> client-facing proposal `docs/GEO-PROPOSAL-bitara.co.md` — **which has not been written yet.**
+>
+> **Not authoritative for facts.** Every number below is a dated snapshot from the first pass. The
+> source of record is [`docs/GEO-FIX-PLAN.md`](../docs/GEO-FIX-PLAN.md) §1, produced by
+> `scripts/geo/run-geo.sh` (run `20261008-193000`). This file has already been corrected once where
+> it disagreed with that run. **Do not copy a number from this file into a deliverable.**
+>
+> **How it differs from the fix plan:** the plan says *what to change, how to verify it, and who owns
+> it*. This file says *how to write the proposal that argues for those changes* — and it is the only
+> place the 15-prompt answer-engine set is defined. See the repository README for the authority rule.
+
 > **How to use:** start a **new conversation**, attach nothing, and paste everything below the
 > `---` line. The evidence pack is embedded so the new session does not repeat the
 > investigation, and the method section records the exact words and queries that produced it.
@@ -65,13 +77,17 @@ labelled as adjacent work.
 | Stack | Next.js App Router behind Cloudflare (`cf-cache-status: DYNAMIC`) |
 | `ai.txt` | 404 — **not a defect**; the proposal is defunct. Do not list it as a gap |
 
-### The blockers `[MEASURED]`
+### The blockers `[MEASURED]` — first-pass snapshot
+
+> Re-measured in run `20261008-193000`. Where the two differ, `docs/GEO-FIX-PLAN.md` §1 is
+> authoritative. Three things changed: the content-class sizes (E1), the Common Crawl sample size
+> (E3), and the retracted `hreflang` claim (E6b).
 
 | Finding | Measurement | Why it matters |
 |---|---|---|
-| **Absent from Common Crawl** | `CC-MAIN-2025-30` and `CC-MAIN-2025-43` both return `{"message": "No Captures found for: bitara.co"}` | Common Crawl feeds many LLM training corpora and retrieval pipelines. No captures ⇒ models have little or no training-time knowledge of the domain |
+| **Absent from Common Crawl** | `bitara.co` returned a **definitive 404** (`No Captures found`) in **6 of the 127** advertised collections sampled (`CC-MAIN-2025-30`, `-2025-43`, `-2026-25/-30/-34/-39`) — zero captures, nothing unmeasured. See `docs/GEO-FIX-PLAN.md` E3 | Common Crawl feeds many LLM training corpora and retrieval pipelines. Absence means models have little or no training-time knowledge of the domain |
 | **No observable Bing presence** | Search for `bitara.co Bitara Capital Sdn Bhd` → 51 results, **zero** bitara.co | Bing feeds Microsoft Copilot and (via the OpenAI/Bing relationship) contributes to ChatGPT Search |
-| **AI crawlers get a reduced page** | `Googlebot` → 1,444,895 B / **30,251** visible-text chars. `GPTBot` / `Google-Extended` / `GoogleOther` → ~248,000 B / **11,627** | **`Google-Extended` is the token governing Gemini/Vertex grounding, and it is on the reduced variant.** ~62% less text for AI consumers. Different content per UA is also cloaking-adjacent |
+| **AI crawlers get a reduced page** | `Googlebot` → ~1,445,262 B / **30,101** visible-text chars. `GPTBot` / `Google-Extended` / `GoogleOther` → ~248,585 B / **11,554**. `Google-CloudVertexBot` receives the FULL page, and plain `curl` with a Googlebot UA also receives the full page — so the split is **User-Agent-driven, not TLS/JA3-driven** (`ua-parity.json`) | **`Google-Extended` is the token governing Gemini/Vertex grounding, and it is on the reduced variant.** Re-measurement also showed the reduced variant is a **lexical subset with fewer repeats** of list content, not a different page (E2b) — so describe it as fewer repetitions, not "a smaller page". Different content per UA is still cloaking-adjacent and must be explained, documented and owned |
 | **No cache validators** | No `ETag`, no `Last-Modified`; `cache-control: private, no-cache, no-store, max-age=0, must-revalidate` | Google recommends `ETag` + `max-age` so crawlers can detect change cheaply. Without them, recrawl is throttled |
 | **`bitara.com` is a parked page** | NS `ns1/2/3.power-dns.com`; HTTP 200, `<title>Bitara.com - Ready for Development</title>` | The default brand guess for a `.com`-biased model. A parked page is arguably worse than no result — it reads as an authoritative non-answer |
 | **`bitara.net` / `bitara.io`** | `.net`: Cloudflare NS, A `172.67.128.117`, HTTP 308, HTTPS **525** (SSL handshake failed). `.io`: Cloudflare NS, no A record | Registered by others; `.net` is broken. Compounds entity confusion |
@@ -139,7 +155,9 @@ curl -sS -D - -o /dev/null -A 'Googlebot/2.1' https://bitara.co/ | grep -iE 'eta
 
 # Common Crawl presence
 curl -sS https://index.commoncrawl.org/collinfo.json | grep -o 'CC-MAIN-2025-[0-9]*'
-curl -sS "https://index.commoncrawl.org/CC-MAIN-2025-43-index?url=bitara.co&output=json"
+# Common Crawl presence (or, as the harness does it: collection discovery + retry + a
+# definitive-404 check → .venv/bin/python scripts/geo/cc_baseline.py --run-id <id>)
+curl -sS "https://index.commoncrawl.org/<newest-collection>-index?url=bitara.co&output=json"
 
 # Domain-identity / conflation check
 for d in bitara.com bitara.net bitara.io; do dig +short NS $d; done
@@ -269,8 +287,8 @@ sitemap/`llms.txt` diffs. Timestamp everything.
 
 ## Tone and presentation rules
 
-- Lead with the number, then the meaning. "Googlebot receives 30,251 characters of visible text;
-  Google-Extended receives 11,627."
+- Lead with the number, then the meaning. "Googlebot receives 30,101 characters of visible text;
+  Google-Extended receives 11,554."
 - Never say "optimise for AI" without saying which engine and which mechanism.
 - Prefer tables over prose for evidence. Prefer prose for justification.
 - Mark every uncertainty. A proposal that cannot be wrong cannot be trusted.

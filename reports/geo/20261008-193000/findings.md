@@ -92,7 +92,7 @@ case-insensitively and compares sets rather than counting greps.
 
 Consequences: the `P1-1` task is now scoped to the genuine defect (the `llms.txt` locale list, which
 still omits `/ja`), and the hreflang half is a "verify, do not rebuild" item. The original claim has
-been retracted in `GEO-OPTIMIZATION-PROMPT.md` and `GEO-PROPOSAL-PROMPT.md` too, so the repository
+been retracted in `method/GEO-OPTIMIZATION-PROMPT.md` and `method/GEO-PROPOSAL-PROMPT.md` too, so the repository
 does not carry two contradictory versions of the same fact.
 
 **Refinement, not a correction:** the reduced per-UA variant is a **lexical subset with fewer

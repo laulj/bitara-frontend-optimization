@@ -8,7 +8,8 @@
 | **LLM executor** (a coding agent in the site repo) | everything in order, but treat §2 (gates), §3 (rules) and each card's *Locate / Change / Verify / Forbidden* fields as executable instructions | to make the change deterministically and prove it |
 
 Every number here is `[MEASURED]` and traces to an artifact in `reports/geo/20261008-193000/`.
-Nothing here re-litigates the settled baseline (`HANDOFF-PROMPT.md`). Inference is labelled.
+Nothing here re-litigates the settled baseline — §1 below is the source of record, produced by
+`scripts/geo/run-geo.sh`. Inference is labelled.
 
 > **Blocker that shapes the whole plan:** the website source repository has not been supplied, so
 > no task may be *applied* yet. Each card is written so that repo access is the **only** missing
@@ -520,7 +521,8 @@ cannot be closed by engineering alone.
 
 **Priority** P2 · **Status** `blocked: credentials` · **Owner** client · **Evidence** L1–L4
 
-Run the `geo-citation-probe` skill (installed this session) against the 15-prompt set, three runs per
+Run the `geo-citation-probe` skill against the 15-prompt set (defined in
+`method/GEO-PROPOSAL-PROMPT.md` §3 and encoded in the skill), three runs per
 prompt per engine, and establish dated index baselines via GSC URL Inspection / Bing URL Info. Until
 `GOOGLE_API_KEY` (Gemini first, per the rollout order) and the GSC/BWT credentials exist, every one
 of these is reported `blocked: <reason>` and the run exits non-zero — a probed-but-challenged engine
