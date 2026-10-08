@@ -1,0 +1,18 @@
+# --- tool env created by scripts/geo/bootstrap.sh ---------------------------------------
+.venv/
+__pycache__/
+*.pyc
+
+# --- node ------------------------------------------------------------------------------
+node_modules/
+package-lock.json
+
+# --- macOS -----------------------------------------------------------------------------
+.DS_Store
+
+# --- regenerable bulk artifacts (kept out of git, reproduced by scripts/geo/run-geo.sh) --
+# A probe screenshot is ~7 MB and carries no information the JSON summary does not.
+reports/geo/*/probe-browser/screenshot.png
+
+# --- secret-scan output (regenerable; committing it invites re-scanning our own report) --
+reports/security/

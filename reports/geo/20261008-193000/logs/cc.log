@@ -1,0 +1,16 @@
+[cc] 127 collections advertised; discovered via cdx_toolkit.commoncrawl.get_cc_endpoints
+[cc] sampling 6: ['CC-MAIN-2026-39', 'CC-MAIN-2026-34', 'CC-MAIN-2026-30', 'CC-MAIN-2026-25', 'CC-MAIN-2025-30', 'CC-MAIN-2025-43']
+[cc]   CC-MAIN-2026-39 bitara.co: no-captures (0)
+[cc]   CC-MAIN-2026-39 bitara.com: no-captures (0)
+[cc]   CC-MAIN-2026-39 bitara.net: no-captures (0)
+[cc]   CC-MAIN-2026-39 bitara.io: no-captures (0)
+[cc]   CC-MAIN-2026-34 bitara.co: no-captures (0)
+[cc]   CC-MAIN-2026-34 bitara.com: no-captures (0)
+[cc]   CC-MAIN-2026-34 bitara.net: no-captures (0)
+[cc]   CC-MAIN-2026-34 bitara.io: no-captures (0)
+[cc]   CC-MAIN-2026-30 bitara.co: no-captures (0)
+[cc]   CC-MAIN-2026-25 bitara.co: no-captures (0)
+[cc]   CC-MAIN-2025-30 bitara.co: no-captures (0)
+[cc]   CC-MAIN-2025-43 bitara.co: no-captures (0)
+[cc] verdict: CONFIRMED for bitara.co: 6 of 6 sampled collection(s) returned a definitive 404 and none was unmeasurable (n/a: none).
+[cc] wrote <repo>/reports/geo/20261008-193000/cc-baseline.json

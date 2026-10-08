@@ -1,0 +1,16 @@
+$ node packages/cli/bin/wq.js probe https://bitara.co/ --out <repo>/reports/geo/20261008-193000/probe-browser
+
+probe https://bitara.co/
+----------------------------------------
+
+digest
+----------------------------------------
+  url         https://bitara.co/
+  status      200  title "Bitara — Web3 Infrastructure & Financial Ecosystem Builder"
+  navigation  3302 ms  html 1442.8 KB
+  requests    63  failed 0  third-party hosts 1
+  transfer    19644.9 KB  link 13282KB · css 3936KB · script 1956KB · img 455KB · fetch 14KB
+  console     1 error(s), 0 warning(s), 0 page error(s)
+  slowest     https://bitara.co/images/case-studies/play-to-earn-football.png (2967 ms)
+
+ ok  digest: ../bitara/bitara-frontend/reports/geo/20261008-193000/probe-browser/report.md

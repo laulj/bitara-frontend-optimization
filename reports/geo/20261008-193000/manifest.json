@@ -1,0 +1,182 @@
+{
+  "run_id": "20261008-193000",
+  "url": "https://bitara.co/",
+  "measured_at": "2026-10-08T10:28:25+00:00",
+  "kit": "$KIT",
+  "env": {
+    "uv": "uv 0.12.9 (Homebrew 2026-09-01 aarch64-apple-darwin)",
+    "python_host": "Python 3.14.7",
+    "node": "v26.3.1"
+  },
+  "steps": [
+    {
+      "step": "preflight_py_compile",
+      "exit_code": 0,
+      "status": "ok",
+      "log": "logs/preflight.log"
+    },
+    {
+      "step": "T5_common_crawl_baseline",
+      "exit_code": 0,
+      "status": "ok",
+      "log": "logs/cc.log"
+    },
+    {
+      "step": "T6_ua_parity",
+      "exit_code": 0,
+      "status": "ok",
+      "log": "logs/ua-parity.log"
+    },
+    {
+      "step": "step3d_render_parity",
+      "exit_code": 0,
+      "status": "ok",
+      "log": "logs/render-parity.log"
+    },
+    {
+      "step": "wq_probe",
+      "exit_code": 0,
+      "status": "ok",
+      "log": "logs/wq-probe.log"
+    }
+  ],
+  "artifacts": [
+    "cc-baseline.json",
+    "logs/cc.log",
+    "logs/preflight.log",
+    "logs/render-parity.log",
+    "logs/steps.tsv",
+    "logs/ua-parity.log",
+    "logs/wq-probe.log",
+    "probe-browser/a11y.yaml",
+    "probe-browser/console.jsonl",
+    "probe-browser/network.jsonl",
+    "probe-browser/probe.json",
+    "probe-browser/report.md",
+    "probe-browser/screenshot.png",
+    "raw/cc/CC-MAIN-2025-30__bitara.co.json",
+    "raw/cc/CC-MAIN-2025-43__bitara.co.json",
+    "raw/cc/CC-MAIN-2026-25__bitara.co.json",
+    "raw/cc/CC-MAIN-2026-30__bitara.co.json",
+    "raw/cc/CC-MAIN-2026-34__bitara.co.json",
+    "raw/cc/CC-MAIN-2026-34__bitara.com.json",
+    "raw/cc/CC-MAIN-2026-34__bitara.io.json",
+    "raw/cc/CC-MAIN-2026-34__bitara.net.json",
+    "raw/cc/CC-MAIN-2026-39__bitara.co.json",
+    "raw/cc/CC-MAIN-2026-39__bitara.com.json",
+    "raw/cc/CC-MAIN-2026-39__bitara.io.json",
+    "raw/cc/CC-MAIN-2026-39__bitara.net.json",
+    "raw/http/A_chromeTLS_chromeUA__r1.html.gz",
+    "raw/http/A_chromeTLS_chromeUA__r2.html.gz",
+    "raw/http/B2_chromeTLS_googlebot_chromehdr__r1.html.gz",
+    "raw/http/B2_chromeTLS_googlebot_chromehdr__r2.html.gz",
+    "raw/http/B_chromeTLS_googlebot__r1.html.gz",
+    "raw/http/B_chromeTLS_googlebot__r2.html.gz",
+    "raw/http/C_plainTLS_chromeUA__r1.html.gz",
+    "raw/http/C_plainTLS_chromeUA__r2.html.gz",
+    "raw/http/D_plainTLS_googlebot__r1.html.gz",
+    "raw/http/D_plainTLS_googlebot__r2.html.gz",
+    "raw/http/E_chromeTLS_gptbot__r1.html.gz",
+    "raw/http/E_chromeTLS_gptbot__r2.html.gz",
+    "raw/http/F_chromeTLS_googleother__r1.html.gz",
+    "raw/http/F_chromeTLS_googleother__r2.html.gz",
+    "raw/http/G_chromeTLS_cloudvertexbot__r1.html.gz",
+    "raw/http/G_chromeTLS_cloudvertexbot__r2.html.gz",
+    "raw/http/H_chromeTLS_googleextended__r1.html.gz",
+    "raw/http/H_chromeTLS_googleextended__r2.html.gz",
+    "raw/http/ref_cffi_chrome_default__r1.html.gz",
+    "raw/http/ref_cffi_chrome_default__r2.html.gz",
+    "raw/render/render_chromeUA.headings.json",
+    "raw/render/render_chromeUA.innerText.txt",
+    "raw/render/render_cloudvertexbotUA.headings.json",
+    "raw/render/render_cloudvertexbotUA.innerText.txt",
+    "raw/render/render_googlebotUA.headings.json",
+    "raw/render/render_googlebotUA.innerText.txt",
+    "raw/render/render_gptbotUA.headings.json",
+    "raw/render/render_gptbotUA.innerText.txt",
+    "render-parity.json",
+    "ua-parity.json"
+  ],
+  "readings": {
+    "common_crawl": {
+      "no_captures_for_bitara_co": [
+        "CC-MAIN-2025-30",
+        "CC-MAIN-2025-43",
+        "CC-MAIN-2026-25",
+        "CC-MAIN-2026-30",
+        "CC-MAIN-2026-34",
+        "CC-MAIN-2026-39"
+      ],
+      "captures_for_bitara_co": {},
+      "conflation_neighbours": {
+        "CC-MAIN-2026-39:bitara.com": "no-captures",
+        "CC-MAIN-2026-39:bitara.net": "no-captures",
+        "CC-MAIN-2026-39:bitara.io": "no-captures",
+        "CC-MAIN-2026-34:bitara.com": "no-captures",
+        "CC-MAIN-2026-34:bitara.net": "no-captures",
+        "CC-MAIN-2026-34:bitara.io": "no-captures"
+      },
+      "not_measured": [],
+      "verdict": "CONFIRMED for bitara.co: 6 of 6 sampled collection(s) returned a definitive 404 and none was unmeasurable (n/a: none)."
+    },
+    "ua_parity": {
+      "header_driven": true,
+      "fingerprint_driven": false,
+      "origin_declares_vary_user_agent": false,
+      "reduced_variant_labels": [
+        "E_chromeTLS_gptbot",
+        "F_chromeTLS_googleother",
+        "H_chromeTLS_googleextended"
+      ],
+      "verdict": "HEADER-DRIVEN: same TLS profile, different content per User-Agent \u2014 UA-conditional content switching (cloaking-adjacent); a rule to be found and owned."
+    },
+    "render_parity": {
+      "playwright_entry": "$KIT/node_modules/.pnpm/playwright@1.63.0/node_modules/playwright/index.mjs",
+      "url": "https://bitara.co/",
+      "relative_to_chromeUA": [
+        {
+          "label": "render_googlebotUA",
+          "inner_text_ratio": 1,
+          "rendered_html_ratio": 1
+        },
+        {
+          "label": "render_gptbotUA",
+          "inner_text_ratio": 0.629,
+          "rendered_html_ratio": 0.19
+        },
+        {
+          "label": "render_cloudvertexbotUA",
+          "inner_text_ratio": 1,
+          "rendered_html_ratio": 1
+        }
+      ],
+      "heading_diff_vs_chromeUA": [
+        {
+          "label": "render_googlebotUA",
+          "missing_headings": [],
+          "extra_headings": []
+        },
+        {
+          "label": "render_gptbotUA",
+          "missing_headings": [
+            "h2: Building the Infrastructure behind Next-GenerationFinancial Ecosystems"
+          ],
+          "extra_headings": []
+        },
+        {
+          "label": "render_cloudvertexbotUA",
+          "missing_headings": [],
+          "extra_headings": []
+        }
+      ],
+      "reading": "RENDERED CONTENT DIFFERS by UA: the split removes content a browser would see, which is the serious reading."
+    }
+  },
+  "blocked": [
+    "L1 Google index status \u2014 needs GSC property access (owner: client)",
+    "L2 Bing index status \u2014 needs Bing Webmaster key (owner: client)",
+    "L3 site: counts \u2014 needs Google CSE key + CX (owner: client)",
+    "L4 citation probing \u2014 needs GOOGLE_API_KEY / ANTHROPIC_API_KEY (owner: client)",
+    "L7 Cloudflare-side cause \u2014 needs CLOUDFLARE_API_TOKEN + zone (owner: client)"
+  ]
+}

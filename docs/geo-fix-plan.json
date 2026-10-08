@@ -1,0 +1,432 @@
+{
+  "plan_version": "1.0",
+  "generated_from": {
+    "run_id": "20261008-193000",
+    "harness": "scripts/geo/run-geo.sh",
+    "artifacts": "reports/geo/20261008-193000/",
+    "human_readable_plan": "docs/GEO-FIX-PLAN.md",
+    "prior_docs": [
+      "HANDOFF-PROMPT.md",
+      "GEO-OPTIMIZATION-PROMPT.md",
+      "GEO-TOOLING-PROPOSAL.md",
+      "GEO-PROPOSAL-PROMPT.md"
+    ]
+  },
+  "executor_contract": {
+    "select_by": "priority, then order",
+    "one_task_per_branch": true,
+    "branch_pattern": "geo/<task-id>-<slug>",
+    "commit_pattern": "geo(<task-id>): <what changed> + before/after numbers + artifact paths",
+    "on_blocked": "skip the task, set status=blocked with blocked_by.reason and blocked_by.owner; never substitute a smaller edit that looks like the fix",
+    "on_unrunnable_check": "record blocked: <reason> and leave the task open (a skipped check is not a pass)",
+    "proof_of_movement": "compare reports/geo/<before>/manifest.json with reports/geo/<after>/manifest.json numerically",
+    "state_file": "docs/geo-fix-plan.json (this file): update tasks[].status/evidence/blocked_by after each task"
+  },
+  "hard_rules": [
+    "No cloaking: different content per user-agent is eliminated or explicitly owned and documented; never optimise around it.",
+    "Never fabricate statistics, clients, awards, certifications, sameAs URLs or timelines.",
+    "Do not break SEO, a11y or users to please bots; an a11y regression is a GEO regression.",
+    "Fix causes in templates, never instances on a single page.",
+    "Keep bitara.co; the TLD is not the problem, conflation is; never propose a migration.",
+    "Every locale is one surface (11 in the sitemap, /ja included) or you have created an inconsistency.",
+    "Never remove SpeakableSpecification, the api-catalog/openapi.json/api-docs Link relations, or an existing sameAs without a stated reason.",
+    "No MCP servers: browser MCPs measured 11,669 tokens/request; wq probe replaces them at 0.",
+    "Do not promise Common Crawl inclusion on a schedule.",
+    "A skipped check is a failure, not a pass.",
+    "Respect security/scope.yml and --authorized before any wq sec command.",
+    "One task = one branch = one commit = one gate re-run."
+  ],
+  "gates": {
+    "before_and_after": [
+      "bash scripts/geo/bootstrap.sh",
+      "GEO_RUN_ID=<runId> bash scripts/geo/run-geo.sh",
+      "# both write reports/geo/<runId>/; diff their manifest.json readings numerically"
+    ],
+    "classic_optional": [
+      "# needs a web-quality-kit checkout; NOT part of the GEO acceptance criteria",
+      "KIT=${KIT:-/path/to/web-quality-kit}",
+      "pnpm -C $KIT wq test src/specs/seo.spec.ts",
+      "pnpm -C $KIT wq test src/specs/crawler-files.spec.ts",
+      "pnpm -C $KIT wq test src/specs/a11y.spec.ts",
+      "pnpm -C $KIT wq test src/specs/headers.spec.ts",
+      "pnpm -C $KIT wq lighthouse https://bitara.co",
+      "pnpm -C $KIT wq crawl https://bitara.co --max-pages 60 --depth 3",
+      "pnpm -C $KIT wq report"
+    ],
+    "budgets_may_not_be_relaxed_silently": true
+  },
+  "source_repo": {
+    "status": "blocked",
+    "owner": "client",
+    "gate": true,
+    "reason": "the website source repository was never supplied to the engagement workspace; only the four .md engagement documents are present"
+  },
+  "reference_pointers": {
+    "full": "reports/geo/<run>/ua-parity.json -> analysis.full_variant_labels",
+    "reduced": "reports/geo/<run>/ua-parity.json -> analysis.reduced_variant_labels",
+    "render": "reports/geo/<run>/render-parity.json -> analysis.relative_to_chromeUA",
+    "corpus": "reports/geo/<run>/cc-baseline.json -> summary",
+    "manifest": "reports/geo/<run>/manifest.json -> readings"
+  },
+  "tasks": [
+    {
+      "id": "P0-4",
+      "order": 1,
+      "title": "Full AI-crawler UA matrix (axis A)",
+      "priority": "P0",
+      "status": "ready",
+      "blocked_by": [],
+      "owner": "engagement lead",
+      "evidence": [
+        "ua-parity.json: only three bot User-Agents sampled",
+        "render-parity.json: GPTBot render loses 37% of rendered text and 69% of DOM elements"
+      ],
+      "why": "P0-1's acceptance is unsound until the reduced-class membership is complete; a fix could pass the test and still leave CCBot or PerplexityBot on a reduced page.",
+      "change": [
+        "Add --ua-set <file.json> to scripts/geo/ua_parity.py: read [{\"label\",\"user_agent\"}], run one repeat each on the Chrome TLS profile, classify against the Chrome baseline content class, write ua-matrix.json.",
+        "Create scripts/geo/ua-sets/axis-a.json listing GPTBot, OAI-SearchBot, ChatGPT-User, PerplexityBot, Perplexity-User, ClaudeBot, Claude-User, anthropic-ai, Googlebot, Google-Extended, GoogleOther, Google-CloudVertexBot, Applebot, Applebot-Extended, Bingbot, CCBot, Amazonbot, Bytespider, Meta-ExternalAgent, DuckAssistBot, MistralAI-User.",
+        "Cross-check robots.txt and Content-Signal against the matrix: allowed-but-reduced is a P0-1 escalation; disallowed-but-ai-train=yes is an intent contradiction for the client to resolve."
+      ],
+      "acceptance": {
+        "commands": [
+          ".venv/bin/python scripts/geo/ua_parity.py --ua-set scripts/geo/ua-sets/axis-a.json --run-id <run> --out reports/geo/<run>"
+        ],
+        "assertions": [
+          "ua-matrix.json has one row per UA with http_status, bytes, visible_text_chars, content_class, reduced",
+          "every non-200 row carries a reason",
+          "reduced-class membership is an explicit list, not a sample"
+        ]
+      },
+      "artifacts": ["reports/geo/<run>/ua-matrix.json"],
+      "forbidden": [
+        "adding UAs to make the result look better",
+        "treating a non-200 as 'not reduced'"
+      ]
+    },
+    {
+      "id": "P0-1",
+      "order": 2,
+      "title": "Remove the User-Agent-conditional reduced variant (or explicitly own it)",
+      "priority": "P0",
+      "status": "blocked",
+      "blocked_by": [
+        {"reason": "website source repository not supplied", "owner": "client"},
+        {"reason": "client must confirm whether the per-UA split is intentional and name its owner (Q2/Q8)", "owner": "client"},
+        {"reason": "if the repo is clean the switch sits at the edge: Cloudflare zone access required (L7)", "owner": "client"}
+      ],
+      "owner": "site engineering",
+      "evidence": [
+        "full class: Chrome, Googlebot, Google-CloudVertexBot -> 30,101 visible-text chars / ~1,445,262 bytes",
+        "reduced class: GPTBot, GoogleOther, Google-Extended -> 11,554 visible-text chars / ~248,585 bytes",
+        "origin does not declare Vary: User-Agent (observed Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding)",
+        "rendered: GPTBot innerText 12,097 vs Chrome 19,235; DOM elements 1,318 vs 4,242 after hydration",
+        "Google-Extended, the token governing Gemini/Vertex grounding, is on the reduced class"
+      ],
+      "why": "the most direct candidate explanation of the client's complaint; UA-conditional content is cloaking-adjacent and must be explained, documented and made deterministic.",
+      "triage_mandatory": {
+        "a_progressive_enhancement": "sections are client-only and equally missing with JS off -> server-render them so every consumer (and JS-off user) gets them",
+        "b_full_variant_inflated": "the full class double-counts (baseline: 'Our Values' 4x vs 2x, a duplicated ticker/carousel) -> dedupe the full variant; never add content to the bot side",
+        "c_genuine_ua_conditional": "sections exist only for some UAs with no JS-off explanation -> escalate and own it; do not optimise around it"
+      },
+      "locate": [
+        "jq '.analysis.heading_diff_vs_chromeUA' reports/geo/<run>/render-parity.json",
+        "diff reports/geo/<run>/raw/render/render_chromeUA.headings.json reports/geo/<run>/raw/render/render_gptbotUA.headings.json",
+        "rg -n \"GPTBot|Google-Extended|GoogleOther|Google-CloudVertexBot|CCBot|PerplexityBot\" -g '!node_modules' -g '!*.lock' .",
+        "rg -n \"user-agent|userAgent|user_agent\" middleware.ts middleware.js next.config.* app lib src",
+        "rg -n \"navigator\\.userAgent\" -g '!node_modules' .",
+        ".venv/bin/python scripts/geo/compare_innertext.py reports/geo/<run>/raw/render/render_chromeUA.innerText.txt reports/geo/<run>/raw/render/render_gptbotUA.innerText.txt"
+      ],
+      "change": [
+        "class (a)/(b): one template-level change applied to every locale",
+        "class (c): no code change - a written decision, plus Vary: User-Agent if the split remains (an unadvertised variant is a cache-poisoning hazard as well as a cloaking one)"
+      ],
+      "acceptance": {
+        "commands": [
+          "jq '.analysis.reduced_variant_labels' reports/geo/<after>/ua-parity.json",
+          "jq '.analysis.content_classes' reports/geo/<after>/ua-parity.json",
+          "jq '.analysis.relative_to_chromeUA' reports/geo/<after>/render-parity.json",
+          "jq '.results[] | {label, dom_elements}' reports/geo/<after>/render-parity.json"
+        ],
+        "assertions": [
+          "reduced_variant_labels == []",
+          "content_classes has exactly one distinct value",
+          "every rendered inner_text_ratio >= 0.98",
+          "DOM element counts within 2% of Chrome",
+          "compare_innertext.py reports no lexical loss against the Chrome baseline"
+        ]
+      },
+      "artifacts": ["reports/geo/<after>/ua-parity.json", "reports/geo/<after>/render-parity.json"],
+      "forbidden": [
+        "adding UA branches to increase bot content",
+        "serving a special page to crawlers",
+        "claiming a fix without both manifest.json readings"
+      ],
+      "escalate_if": ["class (c) is confirmed", "the only way to pass would be to serve bots something users do not get"]
+    },
+    {
+      "id": "P0-2",
+      "order": 3,
+      "title": "Restore cache validators and cacheability",
+      "priority": "P0",
+      "status": "blocked",
+      "blocked_by": [{"reason": "website source repository not supplied", "owner": "client"}],
+      "owner": "site engineering",
+      "evidence": [
+        "no ETag and no Last-Modified on any sampled variant",
+        "cache-control: private, no-cache, no-store, max-age=0, must-revalidate",
+        "cf-cache-status: DYNAMIC (not edge-cached)"
+      ],
+      "why": "that directive string is what Next.js emits for a dynamically rendered route; without validators crawlers cannot revalidate cheaply, and with no-store neither the edge nor a crawler may cache anything.",
+      "locate": [
+        "rg -n \"cookies\\(\\)|headers\\(\\)|noStore|unstable_noStore|searchParams|dynamic\\s*=|revalidate\" app/ middleware.ts",
+        "rg -n \"Cache-Control|cache-control|s-maxage|stale-while-revalidate\" -g '!node_modules' ."
+      ],
+      "change_options": [
+        "PREFERRED: make public marketing routes cacheable (export const revalidate = <seconds>, or remove the cookies()/headers()/searchParams access that forces dynamic rendering); static output then gets ETag from the host.",
+        "ALTERNATIVE: keep it dynamic but cache at the edge - Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=86400 for PUBLIC routes only, letting Cloudflare generate/serve an ETag once the response is cacheable."
+      ],
+      "acceptance": {
+        "commands": [
+          "curl -sS -D - -o /dev/null https://bitara.co/ | grep -iE 'etag|last-modified|cache-control|cf-cache-status'",
+          "curl -sS -D - -o /dev/null https://bitara.co/ | grep -i cf-cache-status",
+          "pnpm -C $KIT wq test src/specs/headers.spec.ts"
+        ],
+        "assertions": [
+          "ETag and/or Last-Modified present",
+          "a max-age or s-maxage value is set",
+          "no blanket no-store on public routes",
+          "cf-cache-status HIT on the second request",
+          "headers.spec.ts still green"
+        ]
+      },
+      "artifacts": ["before/after header dumps saved into the run directory"],
+      "forbidden": [
+        "changing cache-control for personalised, authenticated or preview routes",
+        "setting a long max-age on HTML (use s-maxage plus stale-while-revalidate)"
+      ]
+    },
+    {
+      "id": "P0-3",
+      "order": 4,
+      "title": "Entity disambiguation against the parked bitara.com",
+      "priority": "P0",
+      "status": "blocked",
+      "blocked_by": [
+        {"reason": "website source repository not supplied", "owner": "client"},
+        {"reason": "verifiable sameAs profiles must be confirmed by the client; missing profiles are listed, never invented", "owner": "client"},
+        {"reason": "the decisive Group C probe needs GOOGLE_API_KEY", "owner": "client"}
+      ],
+      "owner": "site engineering + client",
+      "evidence": [
+        "bitara.com serves <title>Bitara.com - Ready for Development</title>",
+        "bitara.net is registered by others",
+        "the disambiguation paragraph already exists in llms.txt (22,722 B) but is absent from structured data",
+        "homepage JSON-LD carries the org graph but no disambiguatingDescription and no sameAs"
+      ],
+      "why": "a .com-biased model resolves the brand to a parked page, which is worse than no answer because it reads as an authoritative non-answer.",
+      "change": [
+        "One stable node id https://bitara.co/#organization, referenced by @id from every other node instead of restating the organisation.",
+        "On that node: disambiguatingDescription (lift the llms.txt paragraph), legalName 'Bitara Capital Sdn. Bhd.', identifier (registration 202201037451), foundingDate, founder, address, and a sameAs array of verified profiles only.",
+        "A visible crawlable sentence in the first viewport of / and /about in every locale: 'Bitara Capital Sdn. Bhd. is bitara.co', plus the non-affiliation statement (not bitara.com, not bitara.net, not affiliated with any Bitara token or mining app). Text, not an image, present without JS."
+      ],
+      "acceptance": {
+        "commands": [
+          "python3 - <<'PY' (fetch /, /about, /ja/about, /ar/about; parse every application/ld+json block; assert disambiguatingDescription, sameAs and 202201037451 are present in each) PY",
+          "pnpm -C $KIT wq test src/specs/seo.spec.ts"
+        ],
+        "assertions": [
+          "every locale of / and /about parses and contains disambiguatingDescription, a non-empty sameAs and the registration identifier",
+          "sameAs points at no look-alike or unrelated Bitara property",
+          "seo.spec.ts still green",
+          "Group C probe recorded as blocked: no GOOGLE_API_KEY until the key exists"
+        ]
+      },
+      "artifacts": ["JSON-LD dumps per locale"],
+      "forbidden": [
+        "inventing sameAs URLs",
+        "claiming affiliation with the parked domains",
+        "adding disambiguation only to /"
+      ]
+    },
+    {
+      "id": "P1-1",
+      "order": 5,
+      "title": "hreflang into the HTML head; reconcile /ja in llms.txt",
+      "priority": "P1",
+      "status": "blocked",
+      "blocked_by": [{"reason": "website source repository not supplied", "owner": "client"}],
+      "owner": "site engineering",
+      "evidence": [
+        "hreflang exists only in the sitemap (17,688 xhtml:link entries); zero in the HTML head",
+        "/ja returns 200 and is in the sitemap (134 URLs) but is absent from llms.txt, which claims 10 languages",
+        "sitemap-index.xml returns 404"
+      ],
+      "why": "non-Google consumers, including AI fetchers, read HTML and not sitemaps; and the site currently contradicts itself about which locales exist.",
+      "change": [
+        "Per-route metadata emitting alternates.canonical (self-referencing per locale) and alternates.languages for every locale plus x-default, generated from the same source of truth as the sitemap so the two cannot drift.",
+        "Add Japanese to the llms.txt language list and link sections so the file matches the sitemap locale set.",
+        "Resolve sitemap-index.xml: add the index, or remove it from any documentation implying it exists."
+      ],
+      "acceptance": {
+        "commands": [
+          "for p in / /ja/about /ar/about /zh/about; do curl -sS https://bitara.co$p | grep -o 'hreflang=\"[^\"]*\"' | sort -u | wc -l; done",
+          "curl -sS https://bitara.co/sitemap.xml | grep -o 'hreflang=\"[^\"]*\"' | sort -u | wc -l",
+          "pnpm -C $KIT wq test src/specs/seo.spec.ts"
+        ],
+        "assertions": [
+          "distinct head hreflang count equals the sitemap locale set, on every sampled locale",
+          "x-default present",
+          "Japanese present in llms.txt",
+          "seo.spec.ts still green"
+        ]
+      },
+      "forbidden": ["hand-maintaining the hreflang list inside a component", "pointing x-default at a locale that does not exist"]
+    },
+    {
+      "id": "P1-2",
+      "order": 6,
+      "title": "Template-level JSON-LD coverage",
+      "priority": "P1",
+      "status": "blocked",
+      "blocked_by": [{"reason": "website source repository not supplied", "owner": "client"}],
+      "owner": "site engineering",
+      "evidence": [
+        "homepage org graph is strong but lacks BreadcrumbList, FAQPage, Service/Offer and ItemList",
+        "/about already emits AboutPage, FAQPage, BreadcrumbList and ItemList: the good pattern exists but is not applied consistently"
+      ],
+      "change": [
+        "every page: BreadcrumbList and inLanguage matching the page locale",
+        "service pages: Service (+ Offer where priced) linked to the org @id",
+        "insights: Article/BlogPosting with author, datePublished, dateModified",
+        "case studies: CreativeWork/Article with about referencing the org",
+        "FAQPage only where the questions genuinely exist on the page; ItemList only where a real list is rendered",
+        "one shared <JsonLd data={...} /> driven by route data, not hand-written script tags"
+      ],
+      "acceptance": {
+        "commands": [
+          "pnpm -C $KIT wq crawl https://bitara.co --max-pages 60 --depth 3",
+          "pnpm -C $KIT wq test src/specs/seo.spec.ts"
+        ],
+        "assertions": [
+          "per URL pattern the required @type set is present and every block parses",
+          "no semantically empty block (empty sameAs or author) counts as fixed",
+          "seo.spec.ts still green"
+        ]
+      },
+      "forbidden": ["FAQPage markup for questions not visible on the page", "per-page hand-written JSON-LD"]
+    },
+    {
+      "id": "P1-3",
+      "order": 7,
+      "title": "Answer-first openings and attributable statistics",
+      "priority": "P1",
+      "status": "blocked",
+      "blocked_by": [
+        {"reason": "website source repository not supplied", "owner": "client"},
+        {"reason": "statistics need a client-controlled source and date before they can be attributed", "owner": "client"}
+      ],
+      "owner": "site engineering + client",
+      "evidence": [
+        "quotable claims already live on the homepage: 99.9% Uptime, 2.3 sec Block Time, Enterprise Security, Carbon Neutral, HQ Kuala Lumpur, founded October 2022, founder Dr Jovian Tan, registration 202201037451",
+        "the /insights/* set is already answer-first: an internal reference standard being left ad-hoc"
+      ],
+      "change": [
+        "each priority template opens with a 40-60 word standalone answer, definition in sentence one; promote the insights pattern into a reusable component",
+        "every statistic carries its source and date in the same section, or it is removed",
+        "headings phrased as the question a buyer asks; sections self-contained enough to be lifted"
+      ],
+      "acceptance": {
+        "commands": ["a content-audit check over the priority templates"],
+        "assertions": [
+          "a definitional sentence within the first 60 words on each priority template",
+          "every numeric claim has an adjacent source and date",
+          "results recorded per template as a table in the run artifacts"
+        ]
+      },
+      "forbidden": ["inventing a metric, client, certification or date", "padding word count to look bigger to an LLM", "moving facts into images"]
+    },
+    {
+      "id": "P2-1",
+      "order": 8,
+      "title": "IndexNow on publish; sitemap submission",
+      "priority": "P2",
+      "status": "blocked",
+      "blocked_by": [
+        {"reason": "INDEXNOW_KEY absent", "owner": "client (free key)"},
+        {"reason": "GSC property access and Bing Webmaster key absent", "owner": "client"}
+      ],
+      "owner": "client + site engineering",
+      "evidence": ["no cache validators, so recrawl is throttled", "no observable Bing presence"],
+      "change": [
+        "wire an IndexNow ping into the publish step (Bing, Yandex, Seznam, Naver - NOT Google)",
+        "submit and refresh sitemaps in Google Search Console and Bing Webmaster Tools"
+      ],
+      "acceptance": {
+        "commands": ["pnpm -C $KIT wq test src/specs/crawler-files.spec.ts"],
+        "assertions": [
+          "a publish ping is logged with a 200 from the IndexNow endpoint",
+          "sitemap submission recorded in GSC and BWT with a date",
+          "absent key reported as blocked: no INDEXNOW_KEY, never a silent skip"
+        ]
+      },
+      "forbidden": ["claiming IndexNow affects Google", "claiming an index outcome from a ping"]
+    },
+    {
+      "id": "P2-2",
+      "order": 9,
+      "title": "Off-site entity graph",
+      "priority": "P2",
+      "status": "blocked",
+      "blocked_by": [
+        {"reason": "scope decision: on-site only, or off-site entity work too (Q3)", "owner": "client"},
+        {"reason": "look-alike domain status unknown: acquirable, affiliated or unowned (Q6)", "owner": "client"}
+      ],
+      "owner": "client",
+      "evidence": ["bitara.com parked; bitara.net registered by others; zero Common Crawl presence"],
+      "change": [
+        "inventory and complete sameAs targets (LinkedIn, Crunchbase, GitHub, X, Wikidata)",
+        "seek third-party corroboration of legal name, registration, HQ and founder",
+        "verify no sameAs points at an unrelated Bitara token or mining app"
+      ],
+      "acceptance": {
+        "assertions": [
+          "every sameAs URL resolves and belongs to the company",
+          "a named owner exists for the corroboration work",
+          "gaps are listed as actions, never invented"
+        ]
+      },
+      "forbidden": ["fabricating profiles or press coverage", "claiming Common Crawl inclusion on a schedule"]
+    },
+    {
+      "id": "P2-3",
+      "order": 10,
+      "title": "Citation probes and index baselines",
+      "priority": "P2",
+      "status": "blocked",
+      "blocked_by": [
+        {"reason": "GOOGLE_API_KEY absent, blocking the Gemini grounding probe (T4)", "owner": "client"},
+        {"reason": "GSC service account, BWT key and CSE key absent (L1/L2/L3)", "owner": "client"}
+      ],
+      "owner": "client",
+      "evidence": ["L1-L4: index status and citation behaviour are currently unmeasurable"],
+      "change": [
+        "run the geo-citation-probe skill over the 15-prompt set, three runs per prompt per engine, scoring mentioned / described_correctly / url_cited",
+        "establish dated index baselines via GSC URL Inspection and Bing URL Info"
+      ],
+      "acceptance": {
+        "commands": ["see the geo-citation-probe skill: reports/geo/<run>/citations/"],
+        "assertions": [
+          "every engine reports a band per prompt, never a single sample",
+          "a missing key is recorded as blocked: <reason> and the run exits non-zero",
+          "a bot-challenged engine is recorded as not measured, never as zero results"
+        ]
+      },
+      "forbidden": ["reporting an API grounding result as the consumer app's behaviour", "presenting one sample as a trend"]
+    }
+  ],
+  "escalate_if": [
+    "genuine UA-conditional content is confirmed (class c)",
+    "a gate regresses and fixing it would require relaxing a budget",
+    "a sameAs target cannot be verified"
+  ]
+}

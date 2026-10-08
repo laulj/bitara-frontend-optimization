@@ -1,0 +1,22 @@
+[ua] ref_cffi_chrome_default repeat 1/2
+[ua] ref_cffi_chrome_default repeat 2/2
+[ua] A_chromeTLS_chromeUA repeat 1/2
+[ua] A_chromeTLS_chromeUA repeat 2/2
+[ua] B_chromeTLS_googlebot repeat 1/2
+[ua] B_chromeTLS_googlebot repeat 2/2
+[ua] B2_chromeTLS_googlebot_chromehdr repeat 1/2
+[ua] B2_chromeTLS_googlebot_chromehdr repeat 2/2
+[ua] C_plainTLS_chromeUA repeat 1/2
+[ua] C_plainTLS_chromeUA repeat 2/2
+[ua] D_plainTLS_googlebot repeat 1/2
+[ua] D_plainTLS_googlebot repeat 2/2
+[ua] E_chromeTLS_gptbot repeat 1/2
+[ua] E_chromeTLS_gptbot repeat 2/2
+[ua] F_chromeTLS_googleother repeat 1/2
+[ua] F_chromeTLS_googleother repeat 2/2
+[ua] G_chromeTLS_cloudvertexbot repeat 1/2
+[ua] G_chromeTLS_cloudvertexbot repeat 2/2
+[ua] H_chromeTLS_googleextended repeat 1/2
+[ua] H_chromeTLS_googleextended repeat 2/2
+[ua] verdict: HEADER-DRIVEN: same TLS profile, different content per User-Agent — UA-conditional content switching (cloaking-adjacent); a rule to be found and owned.
+[ua] wrote <repo>/reports/geo/20261008-193000/ua-parity.json

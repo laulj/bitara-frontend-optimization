@@ -1,0 +1,221 @@
+- link "Skip to main content":
+  - /url: "#main-content"
+- main:
+  - link "Bitara home":
+    - /url: /#top
+    - img "Bitara"
+  - navigation "Primary":
+    - link "Home":
+      - /url: /#top
+    - button "Solutions"
+    - button "Company"
+    - link "Contact Us":
+      - /url: /#contact
+  - button "Search"
+  - link "Free Consultation":
+    - /url: /#contact
+  - button "EN"
+  - img "chat gpt image aug 72026 at 073430 am 1"
+  - paragraph: AI • Blockchain • Financial Infrastructure
+  - paragraph: Build, Launch & Scale
+  - paragraph: Web3 Ecosystems
+  - paragraph: From blockchain infrastructure and liquidity systems to compliance, tokenization, and AI-powered platforms — Bitara delivers end-to-end Web3 and financial technology solutions.
+  - link "Start Your Project":
+    - /url: "#contact"
+  - link "Explore Solutions":
+    - /url: "#solutions"
+    - text: Explore Soulutions
+  - paragraph: Blockchain,
+  - paragraph: L1 & L2 Infrastructure
+  - paragraph: Exchange & Liquidity Systems
+  - paragraph: Market Data & Trading Analytics
+  - paragraph: Smart Contract Security & Audits
+  - paragraph: Licensing, Compliance & Digital Banking
+  - paragraph: Licensing, Compliance & Digital Banking
+  - img "chat gpt image jul 302026012743 pm 11"
+  - paragraph: 99.9% Uptime
+  - paragraph: High-availability infrastructure
+  - paragraph: with zero-downtime architecture.
+  - img "chat gpt image jul 302026012743 pm 21"
+  - paragraph: 2.3 sec Block Time
+  - paragraph: Optimized consensus for
+  - paragraph: speed, scalability and
+  - paragraph: network efficiency.
+  - img "chat gpt image jul 302026012743 pm 31"
+  - paragraph: Enterprise Security
+  - paragraph: Multi-layer protection with
+  - paragraph: audits, monitoring and
+  - paragraph: compliance by design.
+  - region "Latest Insights and Press":
+    - link "Insights What Is a Crypto License?":
+      - /url: /insights/what-is-a-crypto-license
+    - link "Insights What Is a Smart Contract Audit?":
+      - /url: /insights/what-is-a-smart-contract-audit
+    - link "Insights What Is Crypto Custody?":
+      - /url: /insights/what-is-crypto-custody
+    - link "Press Bitara Capital and Starone Technology Enter Memorandum of Understanding to Strengthen Technology Collaboration":
+      - /url: /press/bitara-starone-technology-mou
+    - link "Insights What Is Crypto Market-Making?":
+      - /url: /insights/what-is-crypto-market-making
+    - 'link "Insights Custodial vs Non-Custodial Wallets: What''s the Difference?"':
+      - /url: /insights/custodial-vs-non-custodial-wallets
+    - 'link "Insights CEX vs DEX: Centralized vs Decentralized Exchanges"':
+      - /url: /insights/cex-vs-dex
+    - 'link "Insights ICO vs IDO vs IEO: Token Sale Models Compared"':
+      - /url: /insights/ico-vs-ido-vs-ieo
+    - 'link "Insights Incubator vs Accelerator: What''s the Difference?"':
+      - /url: /insights/incubator-vs-accelerator
+    - 'link "Insights Hot vs Cold Wallets: What''s the Difference?"':
+      - /url: /insights/hot-vs-cold-wallets
+  - paragraph: Our Values
+  - paragraph: Responsible &
+  - paragraph: Secure Technology
+  - paragraph: At Bitara, we believe powerful technology must be built with security, reliability, and long-term sustainability in mind. As we develop AI systems, blockchain infrastructure, and enterprise software, our engineering approach prioritises secure architecture, scalable design, and responsible deployment.
+  - paragraph: Our teams follow industry best practices in software security, infrastructure reliability, and data protection, ensuring that the platforms we build are production-ready and designed for real-world use.
+  - paragraph: Security First
+  - paragraph: Security is integrated into our engineering process from the start. We design systems with secure architecture, encryption standards, and rigorous testing to ensure reliability and resilience for production environments.
+  - img "chat gpt image aug 72026 at 074839 am 11"
+  - paragraph: Scalable Infrastructure
+  - paragraph: Our platforms are built to scale. From AI systems and cloud-native applications to blockchain ecosystems, we engineer infrastructure capable of supporting high transaction volumes and real-world adoption.
+  - img "chat gpt image aug 72026 at 074839 am 21"
+  - paragraph: Compliance-Aware Development
+  - paragraph: We design solutions with regulatory and compliance considerations in mind, helping organisations prepare for evolving global frameworks in fintech, digital assets, and data governance.
+  - img "chat gpt image aug 72026 at 074839 am 31"
+  - paragraph: Responsible AI
+  - paragraph: We develop AI systems with transparency, reliability, and human oversight as core principles, ensuring models are deployed responsibly in enterprise environments.
+  - img "chat gpt image aug 72026 at 074840 am 41"
+  - paragraph: Data Protection
+  - paragraph: Data protection and privacy are integrated into system design through secure data handling, encryption, and access controls.
+  - img "chat gpt image aug 72026 at 074840 am 51"
+  - paragraph: Long-Term Engineering Support
+  - paragraph: Technology requires continuous improvement. We provide ongoing optimisation, infrastructure monitoring, and system upgrades to ensure long-term performance and stability.
+  - img "chat gpt image aug 72026 at 074840 am 61"
+  - paragraph: PROVEN AT SCALE
+  - heading "Building the Infrastructure behind Next-Generation Financial Ecosystems" [level=2]
+  - paragraph: Bitara delivers end-to-end solutions across blockchain, AI, capital structuring, and compliance, empowering institutions, enterprises, and Web3 platforms to build and scale with confidence.
+  - text: Digital & Engineering Financial Services
+  - img
+  - text: Trust & Compliance
+  - paragraph: 100+
+  - paragraph: 75+
+  - paragraph: 137M+
+  - paragraph: 149K+
+  - paragraph: Digital Infrastructure
+  - paragraph: "& Platform Deployments"
+  - paragraph: Engineers, Researchers
+  - paragraph: "& Domain Specialists"
+  - paragraph: Structured &
+  - paragraph: Transacted Digital Assets
+  - paragraph: Active Users
+  - paragraph: Across Platforms
+  - paragraph: Supporting founders, enterprises, and public-sector innovation
+  - paragraph: 🤖
+  - paragraph: DeepMind AI
+  - paragraph: ₿
+  - paragraph: CryptoBase
+  - paragraph: 🚀
+  - paragraph: TechStart
+  - paragraph: ⛓
+  - paragraph: BlockVenture
+  - paragraph: 🌐
+  - paragraph: NovaCorp
+  - paragraph: 💎
+  - paragraph: FinChain
+  - paragraph: 🏛
+  - paragraph: GovTech
+  - paragraph: 🔷
+  - paragraph: MetaLayer
+  - paragraph: 🤖
+  - paragraph: DeepMind AI
+  - paragraph: ₿
+  - paragraph: CryptoBase
+  - paragraph: 🚀
+  - paragraph: TechStart
+  - paragraph: ⛓
+  - paragraph: BlockVenture
+  - paragraph: 🌐
+  - paragraph: NovaCorp
+  - paragraph: 💎
+  - paragraph: FinChain
+  - paragraph: 🏛
+  - paragraph: GovTech
+  - paragraph: 🔷
+  - paragraph: MetaLayer
+  - paragraph: AI Agentic Intelligence
+  - paragraph: Deploy autonomous AI agents that work 24/7, making intelligent decisions and executing tasks with precision
+  - img "chat gpt image jul 292026020310 pm 1"
+  - paragraph: Why AI Agents?
+  - paragraph: Traditional automation follows rigid rules. Our AI agents think, learn, and adapt — making complex decisions autonomously while continuously improving their performance.
+  - img "image 24493"
+  - paragraph: Predictive Analytics
+  - paragraph: Anticipate needs and optimize resource allocation
+  - paragraph: Self-Healing Systems
+  - paragraph: Detect and resolve issues before they impact operations
+  - paragraph: Context-Aware Decision Making
+  - paragraph: Understand nuances and make intelligent choices
+  - img "chat gpt image jul 272026125916 pm 1"
+  - img "object 1"
+  - paragraph: Ready to Deploy AI Agents?
+  - paragraph: Let's discuss how autonomous AI agents can transform your business operations
+  - link "Schedule a Demo":
+    - /url: "#contact"
+  - paragraph: Schedule a Demo
+  - paragraph: 99.7%
+  - paragraph: Accuracy
+  - paragraph: Autonomous AI Agents
+  - paragraph: Self-learning agents that adapt and optimize workflows in real-time
+  - paragraph: < 200ms
+  - paragraph: Response Time
+  - paragraph: Real-Time Processing
+  - paragraph: Lightning-fast decision-making with sub-second response times
+  - paragraph: 10x
+  - paragraph: Efficiency Gain
+  - paragraph: Multi-Agent Orchestration
+  - paragraph: Coordinate multiple AI agents for complex task automation
+  - paragraph: 100%
+  - paragraph: Encrypted
+  - paragraph: Secure & Compliant
+  - paragraph: Enterprise-grade security with full audit trails and compliance
+  - paragraph: 2.3s
+  - paragraph: Block Time
+  - paragraph: Smart Contract Integration
+  - paragraph: Seamless integration with blockchain smart contracts
+  - paragraph: 24/7
+  - paragraph: Monitoring
+  - paragraph: Continuous Learning
+  - paragraph: Adaptive models that improve performance over time
+  - img "image 24495"
+  - paragraph: Built by Engineers. Driven by Strategy.
+  - paragraph: Powered by Capital & Compliance.
+  - paragraph: SOLUTIONS
+  - paragraph: Bitara is a multidisciplinary team of engineers, researchers, strategists, financial experts, and compliance specialists
+  - paragraph: — delivering integrated solutions across AI, Web3, financial infrastructure, and regulatory systems.
+  - paragraph: We combine deep technical execution with financial structuring and regulatory expertise to design, build, and scale next-generation digital ecosystems. From intelligent systems and blockchain infrastructure to capital markets and compliance frameworks, we operate as a full-stack partner across the entire lifecycle.
+  - paragraph: Digital & Engineering
+  - paragraph: End-to-end technology development spanning AI systems, blockchain infrastructure, and scalable digital platforms.
+  - paragraph: AI Systems & Agentic Workflows
+  - paragraph: Web3 & Blockchain Engineering
+  - paragraph: Smart Contracts & dApps
+  - paragraph: Cloud, DevOps & Product Development
+  - paragraph: Learn More
+  - 'link "Digital & Engineering: Learn More"':
+    - /url: /services/digital-engineering
+  - paragraph: Financial Services
+  - paragraph: Enable capital formation, liquidity, and financial growth through tokenization, exchange infrastructure, and asset strategies.
+  - paragraph: Token Structuring & RWA
+  - paragraph: Exchange & Liquidity Infrastructure
+  - paragraph: Treasury & Asset Management
+  - paragraph: Market Access & Listings
+  - paragraph: Learn More
+  - 'link "Financial Services: Learn More"':
+    - /url: /services/financial-services
+  - paragraph: Trust & Compliance
+  - paragraph: Institutional-grade security, regulatory alignment, and governance systems ensuring trust across digital and financial ecosystems.
+  - paragraph: KYC / AML Infrastructure
+  - paragraph: Smart Contract Audits
+  - paragraph: Licensing & Regulatory Advisory
+  - paragraph: Custody & Risk Management
+  - paragraph: Learn More
+  - 'link "Trust & Compliance: Learn More"':
+    - /url: /services/trust-compliance
+# … 542 more lines truncated

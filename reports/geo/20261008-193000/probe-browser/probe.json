@@ -1,0 +1,67 @@
+{
+  "url": "https://bitara.co/",
+  "requestedUrl": "https://bitara.co/",
+  "status": 200,
+  "title": "Bitara — Web3 Infrastructure & Financial Ecosystem Builder",
+  "navigationMs": 3302,
+  "htmlBytes": 1477460,
+  "consoleErrors": 1,
+  "consoleWarnings": 0,
+  "pageErrors": [],
+  "requests": 63,
+  "failedRequests": [],
+  "transferBytes": 20116350,
+  "bytesByType": {
+    "link": 13601178,
+    "script": 2003429,
+    "css": 4030781,
+    "img": 465583,
+    "video": 300,
+    "fetch": 14779,
+    "xmlhttprequest": 300
+  },
+  "thirdPartyHosts": [
+    "static.cloudflareinsights.com"
+  ],
+  "slowestRequests": [
+    {
+      "name": "https://bitara.co/images/case-studies/play-to-earn-football.png",
+      "type": "link",
+      "bytes": 2365779,
+      "ms": 2967
+    },
+    {
+      "name": "https://bitara.co/images/TechStack/Custom-Software-TechStack-Background.png",
+      "type": "css",
+      "bytes": 3226723,
+      "ms": 2945
+    },
+    {
+      "name": "https://bitara.co/images/case-studies/cross-chain-nft-marketplace.png",
+      "type": "link",
+      "bytes": 2362992,
+      "ms": 2930
+    },
+    {
+      "name": "https://bitara.co/images/case-studies/layer1-gaming-blockchain.png",
+      "type": "link",
+      "bytes": 2282731,
+      "ms": 2914
+    },
+    {
+      "name": "https://bitara.co/images/case-studies/rwa-gold-tokenisation.png",
+      "type": "link",
+      "bytes": 2063977,
+      "ms": 2840
+    }
+  ],
+  "scriptResult": null,
+  "artifacts": {
+    "report": "<repo>/reports/geo/20261008-193000/probe-browser/report.md",
+    "aria": "<repo>/reports/geo/20261008-193000/probe-browser/a11y.yaml",
+    "screenshot": "<repo>/reports/geo/20261008-193000/probe-browser/screenshot.png",
+    "console": "<repo>/reports/geo/20261008-193000/probe-browser/console.jsonl",
+    "network": "<repo>/reports/geo/20261008-193000/probe-browser/network.jsonl",
+    "summary": "<repo>/reports/geo/20261008-193000/probe-browser/probe.json"
+  }
+}

@@ -1,0 +1,8 @@
+# Pinned tool env for the GEO harness — Python 3.12.
+# Installed into $GEO_VENV by scripts/geo/bootstrap.sh. T5/T6 need no credentials.
+# Rationale and rejected alternatives: docs/adr/ADR-001-geo-tooling.md
+cdx-toolkit==0.9.39    # T5: Common Crawl index client — retries, backoff, collection discovery
+curl_cffi==0.16.3      # T6: browser-impersonating HTTP client (Chrome TLS/JA3 profile)
+requests==2.34.2       # raw per-collection status probing (definitive 404 vs unmeasured 5xx)
+google-genai==2.29.0   # T4: Gemini grounding probes (needs GOOGLE_API_KEY)
+anthropic==1.12.1      # T4: Claude web-search probes (needs ANTHROPIC_API_KEY)

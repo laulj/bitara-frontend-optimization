@@ -1,0 +1,5 @@
+preflight_py_compile	0	<repo>/reports/geo/20261008-193000/logs/preflight.log
+T5_common_crawl_baseline	0	<repo>/reports/geo/20261008-193000/logs/cc.log
+T6_ua_parity	0	<repo>/reports/geo/20261008-193000/logs/ua-parity.log
+step3d_render_parity	0	<repo>/reports/geo/20261008-193000/logs/render-parity.log
+wq_probe	0	<repo>/reports/geo/20261008-193000/logs/wq-probe.log

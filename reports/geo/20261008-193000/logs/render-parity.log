@@ -1,0 +1,6 @@
+[render] render_chromeUA: status=200 innerText=19235
+[render] render_googlebotUA: status=200 innerText=19235
+[render] render_gptbotUA: status=200 innerText=12097
+[render] render_cloudvertexbotUA: status=200 innerText=19235
+[render] RENDERED CONTENT DIFFERS by UA: the split removes content a browser would see, which is the serious reading.
+[render] wrote <repo>/reports/geo/20261008-193000/render-parity.json

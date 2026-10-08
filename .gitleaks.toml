@@ -1,0 +1,89 @@
+# gitleaks configuration for this repository — used by scripts/geo/scan-secrets.sh, which
+# in turn is what .github/workflows/secret-scan.yml and the local pre-push check run.
+#
+#   gitleaks detect --no-git --source . --config .gitleaks.toml --redact
+#   gitleaks detect --source . --config .gitleaks.toml --log-opts=--all --redact
+#
+# WHY THIS FILE EXISTS AT ALL — GitHub already scans public repositories for known secret
+# patterns and can block a push that contains one. That coverage is real and you should
+# enable it (Settings → Code security: secret scanning + push protection). It cannot cover
+# two things this repository actually produces:
+#
+#   1. Credential material captured inside *artifacts*. The harness writes raw HTTP
+#      responses and response-header dumps into reports/geo/<runId>/raw/. If anyone ever
+#      points it at an authenticated endpoint, an `authorization` or `set-cookie` value is
+#      written to a file — and vendor rules are not looking for that shape in that place.
+#      NOTE the residual gap: gitleaks does not read binary files, so
+#      `reports/**/raw/http/*.html.gz` is NOT inspected by this config. Do not commit
+#      credential-bearing payloads in the belief that a scan covered them.
+#   2. Non-vendor secrets and identifiers — an internal hostname, a zone id, a service
+#      account file, a client's private data — which no generic vendor ruleset knows.
+#
+# Deliberate difference from the web-quality-kit config: this repository does NOT
+# allowlist `reports/`. In the kit, reports/ is the scanner's own output; here it is the
+# evidence, and it is exactly where a leaked header value would land.
+
+title = "bitara-frontend-optimization"
+
+[extend]
+# Keep gitleaks' built-in rules (AWS, GCP, GitHub tokens, private keys, …); we add
+# repository-specific rules and a narrow allowlist.
+useDefault = true
+
+[[rules]]
+id = "artifact-authorization-header"
+description = "Authorization header with a value, captured into an artifact or log"
+regex = '''(?i)authorization["']?\s*[:=]\s*["']?(?:bearer|basic|token|digest)\s+([A-Za-z0-9._~+/=:-]{16,})'''
+secretGroup = 1
+tags = ["secret", "geo-artifact"]
+
+[[rules]]
+id = "artifact-set-cookie"
+description = "Session value captured from a Set-Cookie response header"
+regex = '''(?i)set-cookie["']?\s*[:=]\s*["']?[A-Za-z0-9_.-]{2,}=([A-Za-z0-9%._~+/=:-]{16,})'''
+secretGroup = 1
+tags = ["secret", "geo-artifact"]
+
+[[rules]]
+id = "engagement-env-var-with-value"
+description = "One of this engagement's credentials assigned a real value (docs may name them, never value them)"
+regex = '''(?i)\b(?:GOOGLE_API_KEY|ANTHROPIC_API_KEY|OPENAI_API_KEY|PERPLEXITY_API_KEY|BING_WEBMASTER_API_KEY|GOOGLE_CSE_KEY|GOOGLE_CSE_CX|INDEXNOW_KEY|CLOUDFLARE_API_TOKEN|CLOUDFLARE_ZONE_ID|GSC_SITE|GSC_SA_JSON)\s*[:=]\s*["']?([A-Za-z0-9_+/=.-]{16,})'''
+secretGroup = 1
+tags = ["secret", "engagement"]
+
+[[rules]]
+id = "gcp-service-account-json"
+description = "Google Cloud service-account key file (the GSC credential shape)"
+regex = '''"type"\s*:\s*"service_account"'''
+tags = ["secret", "gcp"]
+
+[[rules]]
+id = "cloudflare-api-token-shape"
+description = "Cloudflare API token (40-char base64-ish token)"
+regex = '''(?i)\bCLOUDFLARE[A-Z_]*\b[^\n]{0,24}?\b([A-Za-z0-9_-]{40})\b'''
+secretGroup = 1
+tags = ["secret", "cloudflare"]
+
+[allowlist]
+description = "Tool envs, dependency trees, and the documented placeholders this repository ships in prose and command examples"
+paths = [
+  '''\.venv/''',
+  '''node_modules/''',
+  '''__pycache__/''',
+  '''\.git/''',
+]
+# These are strings the repository intentionally publishes (command examples, artifact
+# paths). They carry no secret, and allowlisting them by value keeps the scanner quiet
+# without weakening any rule above. Only patterns actually present here belong in this
+# list: an unused placeholder in a scanner config is itself a false positive the next
+# scanner run will report.
+regexTarget = "match"
+regexes = [
+  '''/path/to/web-quality-kit''',
+  '''<runId>''',
+  '''<repo>''',
+  '''<home>''',
+  '''<new>''',
+  '''AKIAIOSFODNN7EXAMPLE''',
+  '''wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY''',
+]
